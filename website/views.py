@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import SignUpForm, AddRecordForm
+from .forms import SignUpForm, AddBasicInfoForm
 from .models import Record
 
 
@@ -70,7 +70,7 @@ def delete_record(request, pk):
 
 
 def add_record(request):
-	form = AddRecordForm(request.POST or None)
+	form = AddBasicInfoForm(request.POST or None)
 	if request.user.is_authenticated:
 		if request.method == "POST":
 			if form.is_valid():
@@ -86,7 +86,7 @@ def add_record(request):
 def update_record(request, pk):
 	if request.user.is_authenticated:
 		current_record = Record.objects.get(id=pk)
-		form = AddRecordForm(request.POST or None, instance=current_record)
+		form = AddBasicInfoForm(request.POST or None, instance=current_record)
 		if form.is_valid():
 			form.save()
 			messages.success(request, "Record Has Been Updated!")

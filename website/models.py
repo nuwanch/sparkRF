@@ -15,4 +15,14 @@ class Record(models.Model):
     def __str__(self):
         return(f"{self.first_name} {self.last_name}")
     
-    
+class Site(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True) 
+    site_name = models.CharField(max_length=50)  
+    site_alpha = models.CharField(max_length=10) 
+    proposedRFS_date = models.DateField()
+    transportable_cow = models.CharField(max_length=50)
+    cow_name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return(f"{self.site_name} {self.site_alpha}")
+
