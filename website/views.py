@@ -2,12 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import SignUpForm, AddBasicInfoForm
-from .models import Record
+from .models import Record, Site
 
 
 # Create your views here.
 def home(request):
-    records = Record.objects.all()
+    records = Site.objects.all()
     #Check to see if logging in
     if request.method == 'POST':
         username = request.POST['username']
@@ -52,7 +52,7 @@ def register_user(request):
 def customer_record(request,pk):
     if request.user.is_authenticated:
         # Look up records
-        customer_record = Record.objects.get(id=pk)
+        customer_record = Site.objects.get(id=pk)
         return render(request, 'record.html', {'customer_record':customer_record})
     else:
         messages.success(request, "You Must Be Logged In To View That Page...")
@@ -60,7 +60,7 @@ def customer_record(request,pk):
     
 def delete_record(request, pk):
 	if request.user.is_authenticated:
-		delete_it = Record.objects.get(id=pk)
+		delete_it = Site.objects.get(id=pk)
 		delete_it.delete()
 		messages.success(request, "Record Deleted Successfully...")
 		return redirect('home')
@@ -85,7 +85,7 @@ def add_record(request):
 
 def update_record(request, pk):
 	if request.user.is_authenticated:
-		current_record = Record.objects.get(id=pk)
+		current_record = Site.objects.get(id=pk)
 		form = AddBasicInfoForm(request.POST or None, instance=current_record)
 		if form.is_valid():
 			form.save()

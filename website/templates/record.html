@@ -4,15 +4,12 @@
 
 
 <div class="card">
-  <div class="card-header"><strong>
+  <!-- <div class="card-header"><strong>
     	{{ customer_record.first_name }} 
 		{{ customer_record.last_name }}</strong>
   </div>
-  <div class="card-body">
-
-
-
-<p class="card-text">
+  <div class="card-body"> -->
+<!-- <p class="card-text">
 <strong>Email: </strong>{{ customer_record.email }}</p>
 
 <p class="card-text">
@@ -35,8 +32,28 @@
 <strong>Create At: </strong>{{ customer_record.created_at }}</p>
 
 <p class="card-text">
-<strong>ID: </strong>{{ customer_record.id }}</p>
-    
+<strong>ID: </strong>{{ customer_record.id }}</p> -->
+
+  <div class="card-header"><strong>
+    {{ customer_record.site_name }} 
+    {{ customer_record.site_alpha }}</strong>
+  </div>
+  <div class="card-body"> 
+
+  <p class="card-text">
+  <strong>Site Name: </strong>{{ customer_record.site_name }}</p>
+      
+  <p class="card-text">
+  <strong>Site Alpha: </strong>{{ customer_record.site_alpha }}</p>
+      
+  <p class="card-text">
+  <strong>Planned On Air Date: </strong>{{ customer_record.proposedRFS_date }}</p>
+      
+  <p class="card-text">
+  <strong>Transportable: </strong>{{ customer_record.transportable_cow }}</p>
+      
+  <p class="card-text">
+  <strong>COW Name: </strong>{{ customer_record.cow_name }}</p>
     
   </div>
 </div>
