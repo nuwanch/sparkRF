@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import SignUpForm, AddBasicInfoForm
 from .models import Record, Site
+import pandas as pd
+from django.http import HttpResponse
 
 
 # Create your views here.
@@ -95,4 +97,19 @@ def update_record(request, pk):
 	else:
 		messages.success(request, "You Must Be Logged In...")
 		return redirect('home')
+      
+def download(request):
+    if request.user.is_authenticated:
+        # Look up records
+        all_records = Site.objects.all()
+        df = pd.DataFrame.from_records(all_records.values())
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=filename.csv'
+
+        df.to_csv(path_or_buf=response,sep=',',float_format='%.2f',index=False,decimal=",")
+        return response
+        
+    else:
+        messages.success(request, "You Must Be Logged In download...")
+        return redirect('home')
     
