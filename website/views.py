@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import SignUpForm, AddBasicInfoForm
-from .models import Record, Site
+from .models import Resource, Site
 import pandas as pd
 from django.http import HttpResponse
 
