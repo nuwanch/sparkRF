@@ -35,8 +35,8 @@ def logout_user(request):
     return redirect('home')
 
 def register_user(request):
+    form = SignUpForm(request.POST or None)
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
             # authenticate and login

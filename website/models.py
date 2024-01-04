@@ -24,6 +24,23 @@ class Site(models.Model):
     proposedRFS_date = models.DateField()
     transportable_cow = models.CharField(max_length=50)
     cow_name = models.CharField(max_length=100)
+    easting = models.FloatField(null=True)
+    northing = models.FloatField(null=True)
+    ground_height = models.FloatField(null=True)
+    address_street = models.CharField(max_length=100, null=True)
+    address_suburb = models.CharField(max_length=100, null=True)
+    address_city = models.CharField(max_length=100, null=True)
+    huawei_rnc = models.CharField(max_length=10, null=True)
+    w850_cluster = models.CharField(max_length=10, null=True)
+    engineering_region = models.CharField(max_length=100, null=True)
+    coverage_type = models.CharField(max_length=100, null=True)
+    temp_site = models.CharField(max_length=10, null=True)
+    property_file_number = models.CharField(max_length=100, null=True)
+    deployment_engineer = models.CharField(max_length=100, null=True)
+    radio_engineer = models.CharField(max_length=100, null=True)
+    add_notes = models.CharField(max_length=250, null=True)
+
+
 
     def __str__(self):
         return(f"{self.site_name} {self.site_alpha}")
