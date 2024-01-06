@@ -5,6 +5,8 @@ from .forms import SignUpForm, AddBasicInfoForm
 from .models import Resource, Site
 import pandas as pd
 from django.http import HttpResponse
+import xlsxwriter
+from io import BytesIO
 
 
 # Create your views here.
@@ -106,10 +108,46 @@ def download(request):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=filename.csv'
 
-        df.to_csv(path_or_buf=response,sep=',',float_format='%.2f',index=False,decimal=",")
+        df.to_excel(path_or_buf=response,sep=',',float_format='%.2f',index=False,decimal=",")
         return response
         
     else:
         messages.success(request, "You Must Be Logged In download...")
         return redirect('home')
     
+def download_xl(request, pk):
+    if request.user.is_authenticated:
+    # Create a BytesIO object to store the Excel file
+        excel_data = BytesIO()
+
+            # Create a new workbook and add a worksheet
+        workbook = xlsxwriter.Workbook(excel_data)
+        worksheet = workbook.add_worksheet()
+        worksheet1 = workbook.add_worksheet()
+
+        current_site = Site.objects.get(id=pk)
+
+            # Write data to the worksheet
+        worksheet.write('A10', current_site.site_alpha)
+        worksheet.write('B10', current_site.site_name)
+        worksheet1.write('C23', current_site.proposedRFS_date)
+        worksheet1.write('D25', current_site.cow_name)
+
+
+            # Close the workbook
+        workbook.close()
+
+            # Set the BytesIO object's file pointer to the beginning
+        excel_data.seek(0)
+
+            # Create the HTTP response
+        response = HttpResponse(excel_data, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+            # Set the file name for download
+        response['Content-Disposition'] = 'attachment; filename="example.xlsx"'
+        return response
+    else:
+        messages.success(request, "You Must Be Logged In download...")
+        return redirect('home')
+    
+
