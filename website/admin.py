@@ -2,8 +2,9 @@ from django.contrib import admin
 
 # Register your models here.
 from django.contrib import admin
-from .models import Resource,Site,Record
+from .models import Resource,Site,Record,PhyInfo
 
 admin.site.register(Site)
 admin.site.register(Resource)
 admin.site.register(Record)
+admin.site.register(PhyInfo)

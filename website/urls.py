@@ -12,6 +12,7 @@ urlpatterns = [
     path('update_record/<int:pk>', views.update_record, name='update_record'),
     path('download/', views.download, name='download'),
     path('download_xl/<int:pk>', views.download_xl, name='download_xl'),
+    path('add_phy_info', views.add_phy_info, name='add_phy_info'),
    
    
 ]

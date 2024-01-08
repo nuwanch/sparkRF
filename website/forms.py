@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
-from .models import Site, Resource, Record
+from .models import Site, Resource, Record, PhyInfo
 
 Op_BOOP= [
     ('Yes','Yes'),
@@ -85,4 +85,25 @@ class AddBasicInfoForm(forms.ModelForm):
                     )
 	
     
-      
+class PhyInfoForm(forms.ModelForm):
+    site_alpha = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="Site Alpha")
+    frequency_band = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="Frequency Band")
+    vendor = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="Vendor")
+    sector = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="Sector")
+    azimuth = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="Azimuth")
+    antenna_height = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="Antenna Height")
+    electrical_tilt = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="Electrical Tilt")
+    mechanical_tilt = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="Mechanical Tilt")
+    antenna_type = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="Antenna Type")
+    share_antenna = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="Share Antenna")
+    radio_equipment = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="Radio Equipment")
+    split_sectors = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="Split Sectors")
+    main_radio_type = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="Main Radio Type") 
+    num_carriers = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="No of Carriers")
+    capacity_card_type = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="Capacity Card Type")
+    num_cards = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="No of Cards")
+    cabinet_suffix = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="Cabinet Suffix")
+    
+    class Meta:
+        model = PhyInfo  
+        fields = '__all__' 

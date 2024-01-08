@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import SignUpForm, AddBasicInfoForm
-from .models import Resource, Site
+from .forms import SignUpForm, AddBasicInfoForm, PhyInfoForm
+from .models import Resource, Site, PhyInfo
 import pandas as pd
 from django.http import HttpResponse
 import xlsxwriter
@@ -79,8 +79,8 @@ def add_record(request):
 		if request.method == "POST":
 			if form.is_valid():
 				add_record = form.save()
-				messages.success(request, "Record Added...")
-				return redirect('home')
+				messages.success(request, "Basic information Added...")
+				return redirect('add_phy_info')
 		return render(request, 'add_record.html', {'form':form})
 	else:
 		messages.success(request, "You Must Be Logged In...")
@@ -150,4 +150,15 @@ def download_xl(request, pk):
         messages.success(request, "You Must Be Logged In download...")
         return redirect('home')
     
-
+def add_phy_info(request):
+	form = PhyInfoForm(request.POST or None)
+	if request.user.is_authenticated:
+		if request.method == "POST":
+			if form.is_valid():
+				add_phy_info = form.save()
+				messages.success(request, "Sector Information Added...")
+				return redirect('add_phy_info')
+		return render(request, 'phy_info.html', {'form':form})
+	else:
+		messages.success(request, "You Must Be Logged In...")
+		return redirect('home')
