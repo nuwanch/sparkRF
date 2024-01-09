@@ -62,7 +62,7 @@ def customer_record(request,pk):
         messages.success(request, "You Must Be Logged In To View That Page...")
         return redirect('home')
     
-def delete_record(request, pk):
+def delete_record(request, pk): #to delete a site
 	if request.user.is_authenticated:
 		delete_it = Site.objects.get(id=pk)
 		delete_it.delete()
@@ -108,7 +108,7 @@ def download(request):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=filename.csv'
 
-        df.to_excel(path_or_buf=response,sep=',',float_format='%.2f',index=False,decimal=",")
+        df.to_csv(path_or_buf=response,sep=',',float_format='%.2f',index=False,decimal=",")
         return response
         
     else:
@@ -126,14 +126,30 @@ def download_xl(request, pk):
         worksheet1 = workbook.add_worksheet()
 
         current_site = Site.objects.get(id=pk)
+        dateFormat= workbook.add_format({'num_format': 'dd/mm/yy'})
+        cell_format = workbook.add_format()
+        cell_format.set_pattern(1)
+        cell_format.set_bg_color('pink')
+        cell_format.set_align('left')
 
             # Write data to the worksheet
-        worksheet.write('A10', current_site.site_alpha)
-        worksheet.write('B10', current_site.site_name)
-        worksheet1.write('C23', current_site.proposedRFS_date)
-        worksheet1.write('D25', current_site.cow_name)
+        
+        worksheet.write('C5', "Site Name", cell_format)
+        worksheet.write('E5', current_site.site_name, cell_format)
+        worksheet.write('C6', "Site Alpha")
+        worksheet.write('E6', current_site.site_alpha)
+        worksheet.write('C7', "Proposed RFS/Commencement Date")
+        worksheet.write('E7', current_site.proposedRFS_date, dateFormat)
+        worksheet.write('C10',"Transportable (COW) - see note 3")
+        worksheet.write('E10',current_site.transportable_cow)
+        worksheet.write('C11',"Transportable Name")
+        worksheet.write('E11', current_site.cow_name)
+       
 
-
+        # worksheet.write('',"")
+        # worksheet.write('',)
+        
+        
             # Close the workbook
         workbook.close()
 
