@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import SignUpForm, AddBasicInfoForm, PhyInfoForm
-from .models import Resource, Site, PhyInfo
+from .models import Resource, Site, PhyInfo, Record
 import pandas as pd
 from django.http import HttpResponse
 import xlsxwriter
@@ -28,8 +28,48 @@ def home(request):
         return render(request, 'home.html', {'records':records})
 
 
-def login_user(request):
+def reserve_alphacode(request):
     pass
+
+def create_rfreport(request):
+    pass
+
+def create_tnet(request):
+    pass
+
+def create_celldata(request):
+    pass
+
+def book_resource(request):
+	form = Record(request.POST or None)
+	if request.user.is_authenticated:
+		if request.method == "POST":
+			book_resource = form.save()
+			messages.success(request, "Booking Confiremd...")
+			return redirect('view_bookings')
+		return render(request, 'book_resource.html', {'form':form})
+	else:
+		messages.success(request, "You Must Be Logged In...")
+		return redirect('home')
+    
+    
+def view_bookings(request):
+    if request.user.is_authenticated:
+        # Look up records
+        bookings = Record.objects.all()
+        return render(request, 'view_resource.html', {'bookings':bookings})
+    else:
+        messages.success(request, "You Must Be Logged In To View That Page...")
+        return redirect('home')
+
+def view_siteinfo(request):
+    if request.user.is_authenticated:
+        # Look up records
+        records = Site.objects.all()
+        return render(request, 'users.html', {'records':records})
+    else:
+        messages.success(request, "You Must Be Logged In To View That Page...")
+        return redirect('home')
 
 def logout_user(request):
     logout(request)
@@ -72,7 +112,6 @@ def delete_record(request, pk): #to delete a site
 		messages.success(request, "You Must Be Logged In To Do That...")
 		return redirect('home')
 
-
 def add_record(request):
 	form = AddBasicInfoForm(request.POST or None)
 	if request.user.is_authenticated:
@@ -85,7 +124,6 @@ def add_record(request):
 	else:
 		messages.success(request, "You Must Be Logged In...")
 		return redirect('home')
-
 
 def update_record(request, pk):
 	if request.user.is_authenticated:

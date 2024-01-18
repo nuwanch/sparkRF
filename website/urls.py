@@ -13,6 +13,14 @@ urlpatterns = [
     path('download/', views.download, name='download'),
     path('download_xl/<int:pk>', views.download_xl, name='download_xl'),
     path('add_phy_info', views.add_phy_info, name='add_phy_info'),
+    path('reserve_alphacode', views.reserve_alphacode, name='reserve_alphacode'),
+    path('view_siteinfo', views.view_siteinfo, name='view_siteinfo'),
+    path('create_rfreport', views.create_rfreport, name='create_rfreport'),
+    path('create_tnet', views.create_tnet, name='create_tnet'),
+    path('create_celldata', views.create_celldata, name='create_celldata'),
+    path('book_resource', views.book_resource, name='book_resource'),
+    path('view_bookings', views.view_bookings, name='view_bookings'),
+    
    
    
 ]

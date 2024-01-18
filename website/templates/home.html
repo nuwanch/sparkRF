@@ -4,41 +4,39 @@
 
     {% if user.is_authenticated %}
     <div>
-    <h1>Sites</h1>
-    <table class="table table-striped table-hover table-bordered">
-      <thead class="table-dark">
-        <tr>
-          <th scope="col">Site Name</th>
-          <th scope="col">Site Alpha</th>
-          <th scope="col">Planned On Air Date</th>
-          <th scope="col">Transportable</th>
-          <th scope="col">COW Name</th>
-          <th scope="col">ID</th>
-        </tr>
-      </thead>
-      <tbody>
-
-    {% if records %}
-        {% for record in records %}
-        <tr>
-          <td>{{record.site_name }}</td>
-          <td>{{record.site_alpha}}</td>
-          <td>{{ record.proposedRFS_date }}</td>
-          <td>{{ record.transportable_cow }}</td>
-          <td>{{ record.cow_name }}</td>
-          <td><a href="{% url 'record' record.id %}">{{ record.id }}</a></td>
-        </tr>
-        {% endfor %}
-      </div>
-        
-    {% endif %}
-
-        </tbody>
-    </table>
-    <a href="{% url 'add_record' %}" class="btn btn-secondary">Add Record</a>
-    <a href="{% url 'download' %}" class="btn btn-secondary">Download</a>
     
+    <a href="{% url 'reserve_alphacode' %}" class="btn btn-secondary">
+      <img src="D:\DevProject\SparkProject\sparkrf\website\static\images\alpha.jpg" width="30" height="30">
+      Reserve Alpha Code 
+    </a>
+        
+    <a href="{% url 'view_siteinfo' %}" class="btn btn-secondary">
+      <img src="D:\DevProject\SparkProject\sparkrf\website\static\images\alpha.jpg" width="30" height="30">
+      View Site Information
+    </a>
 
+    <a href="{% url 'create_rfreport' %}" class="btn btn-secondary">
+      <img src="D:\DevProject\SparkProject\sparkrf\website\static\images\alpha.jpg" width="30" height="30">
+      Create RF Report
+    </a>
+
+    <a href="{% url 'create_tnet' %}" class="btn btn-secondary">
+      <img src="D:\DevProject\SparkProject\sparkrf\website\static\images\alpha.jpg" width="30" height="30">
+      Create TNET
+    </a>
+
+    <a href="{% url 'create_celldata' %}" class="btn btn-secondary">
+      <img src="D:\DevProject\SparkProject\sparkrf\website\static\images\alpha.jpg" width="30" height="30">
+      Create Cell Data
+    </a>
+
+    <a href="{% url 'view_bookings' %}" class="btn btn-secondary">
+      <img src="D:\DevProject\SparkProject\sparkrf\website\static\images\alpha.jpg" width="30" height="30">
+      Book Resource
+    </a>
+
+    </div>
+    
     {% else %}
     <div class="col-md-6 offset-md-3">
     <h1>Login</h1>
