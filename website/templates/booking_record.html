@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+<div class="card">
+
+  <div class="card-header"><strong>
+    {{ booking_record.asset_name }} 
+    {{ booking_record.booked_by }}</strong>
+  </div>
+  <div class="card-body"> 
+
+  <p class="card-text">
+  <strong>Site Name: </strong>{{ booking_record.asset_name }}</p>
+      
+  <p class="card-text">
+  <strong>Site Alpha: </strong>{{ booking_record.booked_by }}</p>
+      
+  <p class="card-text">
+  <strong>Planned On Air Date: </strong>{{ booking_record.from_date }}</p>
+      
+  <p class="card-text">
+  <strong>Transportable: </strong>{{ booking_record.to_date }}</p>
+      
+  <p class="card-text">
+  <strong>COW Name: </strong>{{ booking_record.purpose }}</p>
+    
+  </div>
+</div>
+
+<br/><br/>
+<a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+<a href="{% url 'delete_booking' booking_record.id %}" class="btn btn-danger">Delete</a>
+<a href="{% url 'update_booking' booking_record.id %}" class="btn btn-secondary">Update </a>
+
+{% endblock %}

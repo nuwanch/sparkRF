@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import SignUpForm, AddBasicInfoForm, PhyInfoForm
+from .forms import SignUpForm, AddBasicInfoForm, PhyInfoForm, RecordForm
 from .models import Resource, Site, PhyInfo, Record
 import pandas as pd
 from django.http import HttpResponse
@@ -41,18 +41,27 @@ def create_celldata(request):
     pass
 
 def book_resource(request):
-	form = Record(request.POST or None)
+	form = RecordForm(request.POST or None)
 	if request.user.is_authenticated:
 		if request.method == "POST":
-			book_resource = form.save()
-			messages.success(request, "Booking Confiremd...")
-			return redirect('view_bookings')
+			if form.is_valid():
+				book_resource = form.save()
+				messages.success(request, "Basic information Added...")
+				return redirect('book_resource')
 		return render(request, 'book_resource.html', {'form':form})
 	else:
 		messages.success(request, "You Must Be Logged In...")
 		return redirect('home')
     
-    
+def booking_record(request,pk):
+    if request.user.is_authenticated:
+        # Look up records
+        booking_record = Record.objects.get(id=pk)
+        return render(request, 'booking_record.html', {'booking_record':booking_record})
+    else:
+        messages.success(request, "You Must Be Logged In To View That Page...")
+        return redirect('home')
+     
 def view_bookings(request):
     if request.user.is_authenticated:
         # Look up records
@@ -61,6 +70,29 @@ def view_bookings(request):
     else:
         messages.success(request, "You Must Be Logged In To View That Page...")
         return redirect('home')
+    
+def update_booking(request,pk):
+	if request.user.is_authenticated:
+		current_record = Record.objects.get(id=pk)
+		form = RecordForm(request.POST or None, instance=current_record)
+		if form.is_valid():
+			form.save()
+			messages.success(request, "Record Has Been Updated!")
+			return redirect('home')
+		return render(request, 'update_booking_record.html', {'form':form})
+	else:
+		messages.success(request, "You Must Be Logged In...")
+		return redirect('home')
+      
+def delete_booking(request,pk): #to delete a booking
+	if request.user.is_authenticated:
+		delete_it = Record.objects.get(id=pk)
+		delete_it.delete()
+		messages.success(request, "Record Deleted Successfully...")
+		return redirect('home')
+	else:
+		messages.success(request, "You Must Be Logged In To Do That...")
+		return redirect('home')
 
 def view_siteinfo(request):
     if request.user.is_authenticated:

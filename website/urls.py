@@ -20,6 +20,11 @@ urlpatterns = [
     path('create_celldata', views.create_celldata, name='create_celldata'),
     path('book_resource', views.book_resource, name='book_resource'),
     path('view_bookings', views.view_bookings, name='view_bookings'),
+    path('booking_record/<int:pk>', views.booking_record, name='booking_record'),
+    path('update_booking/<int:pk>', views.update_booking, name='update_booking'),
+    path('delete_booking/<int:pk>', views.delete_booking, name='delete_booking'),
+    
+
     
    
    

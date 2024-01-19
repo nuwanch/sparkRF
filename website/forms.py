@@ -115,16 +115,24 @@ class PhyInfoForm(forms.ModelForm):
         model = PhyInfo  
         fields = '__all__' 
 
-class Record(forms.ModelForm):
+class RecordForm(forms.ModelForm):
     asset_name = forms.CharField(required=True, widget=forms.Select(choices=Resource_name), label="Shared Resource")
     booked_by =  forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="Name")
-    from_date =  forms.CharField(required=True, widget=forms.widgets.DateTimeInput(attrs={"class":"form-control"}), label="From")
-    to_date = forms.CharField(required=True, widget=forms.widgets.DateTimeInput(attrs={"class":"form-control"}), label="To")
+    from_date =  forms.CharField(required=True, widget=forms.widgets.DateTimeInput(attrs={'class':'form-control','placeholder':'YYYY-MM-DD HH:MM'}), label="From")
+    to_date = forms.CharField(required=True, widget=forms.widgets.DateTimeInput(attrs={'class':'form-control','placeholder':'YYYY-MM-DD HH:MM'}), label="To")
     emp_number =  forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Emp Number'}))
     phone =  forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Mobile Number 027-xxxxxxxx'}))
     email =  forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Email'}))
     purpose =  forms.CharField(required=True, max_length=200, widget=forms.Textarea(attrs={'class':'form-control','placeholder':'Purpose'}))
     
     class Meta:
-        model = PhyInfo  
-        fields = '__all__'
+        model = Record  
+        fields = ('asset_name',
+                  'booked_by', 
+                  'from_date',
+                  'to_date',
+                  'emp_number',
+                  'phone',
+                  'email',
+                  'purpose'
+                  )

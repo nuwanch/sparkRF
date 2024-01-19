@@ -8,14 +8,25 @@
 <br/>
 
 
-  <form method="POST">
-    {% csrf_token %}
+<form method="POST" action="{% url 'book_resource' %}">
+  {% csrf_token %}
   
-    {{ form.as_p }}
+  {{ form.as_p }}
   
-  <br/>
+    <br/>
     <button type="submit" class="btn btn-secondary">Book</button>
+     <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
   
-  </form>
-
+</form>
+<!-- Initialize Datepicker.js -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      var datepickers = document.querySelectorAll('.datepicker');
+      datepickers.forEach(function(datepicker) {
+          new Datepicker(datepicker, {
+              // Additional options if needed
+          });
+      });
+  });
+</script>
 {% endblock %}

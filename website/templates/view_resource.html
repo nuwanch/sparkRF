@@ -22,11 +22,11 @@
         {% for booking in bookings %}
         <tr>
           <td>{{booking.asset_name }}</td>
-          <td>{{record.booked_by}}</td>
-          <td>{{ record.from_date }}</td>
-          <td>{{ record.to_date }}</td>
-          <td>{{ record.purpose }}</td>
-          <td><a href="{% url 'record' record.id %}">{{ record.id }}</a></td>
+          <td>{{booking.booked_by}}</td>
+          <td>{{ booking.from_date }}</td>
+          <td>{{ booking.to_date }}</td>
+          <td>{{ booking.purpose }}</td>
+          <td><a href="{% url 'booking_record' booking.id %}">{{ booking.id }}</a></td>
         </tr>
         {% endfor %}
       </div>
