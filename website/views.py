@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import SignUpForm, AddBasicInfoForm, PhyInfoForm, RecordForm
+from .forms import SignUpForm, AddBasicInfoForm, PhyInfoForm, RecordForm, ResourceForm
 from .models import Resource, Site, PhyInfo, Record
+from django.contrib.auth.models import User
 import pandas as pd
 from django.http import HttpResponse
 import xlsxwriter
@@ -10,7 +11,19 @@ from io import BytesIO
 
 
 # Create your views here.
-def home(request):
+
+def create_resource(request): # this is to create resources but I'm going to keep it for the admin, will remove in future
+    if request.method == 'POST':
+        form = ResourceForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('success_url')  # Redirect to a success page
+    else:
+        form = ResourceForm()
+
+    return render(request, 'create_resource.html', {'form': form})
+
+def home(request): # this is the home login page
     records = Site.objects.all()
     #Check to see if logging in
     if request.method == 'POST':
@@ -27,20 +40,40 @@ def home(request):
     else:
         return render(request, 'home.html', {'records':records})
 
-
-def reserve_alphacode(request):
+def reserve_alphacode(request): # alpha code reservation, self verification
     pass
 
-def create_rfreport(request):
+def create_rfreport(request): # rf report creation, take necessary inputs only
     pass
 
-def create_tnet(request):
+def create_tnet(request): # tnet form creation, take necessary inputs only
     pass
 
-def create_celldata(request):
+def create_celldata(request): #cell data creation, take necessary inputs only
     pass
 
-def book_resource(request):
+def book_resource(request): # create booking
+    # login_user = User.objects.filter(username=User.get_username)
+    # form = RecordForm(request.POST or None)
+    # if request.user.is_authenticated:
+    #     if request.method == "POST":
+    #         if form.is_valid():
+    #             form.save()
+    #             messages.success(request, "Booking Added...")
+    #             return redirect('book_resource')
+    #         else:
+    #     # Initialize the form with filtered data
+    #             if login_user.exists():
+    #                 initial_data = {'booked_by': login_user.first().username}
+    #                 form = RecordForm(initial=initial_data)
+    #             else:
+    #                 form = RecordForm()
+    #     return render(request, 'book_resource.html', {'form':form})
+    # else:
+    #     messages.success(request, "You Must Be Logged In...")
+    #     return redirect('home')
+
+    #previous form
 	form = RecordForm(request.POST or None)
 	if request.user.is_authenticated:
 		if request.method == "POST":
@@ -53,7 +86,7 @@ def book_resource(request):
 		messages.success(request, "You Must Be Logged In...")
 		return redirect('home')
     
-def booking_record(request,pk):
+def booking_record(request,pk): # to view specific booking and alter. 
     if request.user.is_authenticated:
         # Look up records
         booking_record = Record.objects.get(id=pk)
@@ -62,7 +95,7 @@ def booking_record(request,pk):
         messages.success(request, "You Must Be Logged In To View That Page...")
         return redirect('home')
      
-def view_bookings(request):
+def view_bookings(request): # to show all the bookings
     if request.user.is_authenticated:
         # Look up records
         bookings = Record.objects.all()
@@ -71,7 +104,7 @@ def view_bookings(request):
         messages.success(request, "You Must Be Logged In To View That Page...")
         return redirect('home')
     
-def update_booking(request,pk):
+def update_booking(request,pk): # to update specific booking
 	if request.user.is_authenticated:
 		current_record = Record.objects.get(id=pk)
 		form = RecordForm(request.POST or None, instance=current_record)
@@ -94,7 +127,7 @@ def delete_booking(request,pk): #to delete a booking
 		messages.success(request, "You Must Be Logged In To Do That...")
 		return redirect('home')
 
-def view_siteinfo(request):
+def view_siteinfo(request): # view total site info
     if request.user.is_authenticated:
         # Look up records
         records = Site.objects.all()
@@ -103,12 +136,12 @@ def view_siteinfo(request):
         messages.success(request, "You Must Be Logged In To View That Page...")
         return redirect('home')
 
-def logout_user(request):
+def logout_user(request):# to logout user
     logout(request)
     messages.success(request, "You have been logged out...")
     return redirect('home')
 
-def register_user(request):
+def register_user(request): # user registration
     form = SignUpForm(request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
@@ -125,7 +158,7 @@ def register_user(request):
             return render(request, 'register.html', {'form':form})
     return render(request, 'register.html', {})
 
-def customer_record(request,pk):
+def customer_record(request,pk): # specific site information
     if request.user.is_authenticated:
         # Look up records
         customer_record = Site.objects.get(id=pk)

@@ -12,21 +12,12 @@
   {% csrf_token %}
   
   {{ form.as_p }}
-  
+ 
     <br/>
     <button type="submit" class="btn btn-secondary">Book</button>
-     <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+     <a href="{% url 'view_bookings' %}" class="btn btn-secondary">Back</a>
   
 </form>
-<!-- Initialize Datepicker.js -->
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-      var datepickers = document.querySelectorAll('.datepicker');
-      datepickers.forEach(function(datepicker) {
-          new Datepicker(datepicker, {
-              // Additional options if needed
-          });
-      });
-  });
-</script>
+
+
 {% endblock %}

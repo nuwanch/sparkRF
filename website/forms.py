@@ -2,17 +2,15 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
 from .models import Site, Resource, Record, PhyInfo
+from django.forms import ModelForm
+
 
 Op_BOOP= [
     ('Yes','Yes'),
     ('No','No'),
         ]
 
-Resource_name = [
-     ('RF Pool Car','RF Pool Car' ),
-     ('Map Info Shared Machine','Map Info Shared Machine'),
-     ('Actix Shared Machine','Actix Shared Machine'),
-]
+
 
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(label="", widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Email Address'}))
@@ -48,8 +46,13 @@ class SignUpForm(UserCreationForm):
 class AddBasicInfoForm(forms.ModelForm):
     site_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Site Name", "class":"form-control"}), label="Site Name")
     site_alpha = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Site Alpha", "class":"form-control"}), label="Site Alpha")
-    proposedRFS_date = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Planned Date", "class":"form-control"}), label="Planned Date")
-    transportable_cow = forms.CharField(required=True, widget=forms.Select(choices=Op_BOOP), label="Transportable")
+    proposedRFS_date = forms.DateField(
+         required=True, 
+         widget=forms.widgets.DateInput(format="%Y-%m-%d", attrs={"type": "date","class":"form-control"}),
+         input_formats=["%Y-%m-%d"],
+         label="Planned Date"
+         )
+    transportable_cow = forms.CharField(required=True,  widget=forms.Select(choices=Op_BOOP,attrs={"class":"form-control"}), label="Transportable")
     cow_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Cow Name", "class":"form-control"}), label="COW Name")
     easting = forms.FloatField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Easting", "class":"form-control"}), label="Easting")
     northing = forms.FloatField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Northing", "class":"form-control"}), label="Northing")
@@ -61,7 +64,7 @@ class AddBasicInfoForm(forms.ModelForm):
     w850_cluster = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"", "class":"form-control"}), label="W850 Cluster")
     engineering_region = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"", "class":"form-control"}), label="Engineering Region")
     coverage_type = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"", "class":"form-control"}), label="Coverage Type")
-    temp_site = forms.CharField(required=True,  widget=forms.Select(choices=Op_BOOP), label="Is this a temporary site")
+    temp_site = forms.CharField(required=True,  widget=forms.Select(choices=Op_BOOP,attrs={"class":"form-control"}), label="Is this a temporary site")
     property_file_number = forms.CharField(widget=forms.widgets.TextInput(attrs={"placeholder":"", "class":"form-control"}), label="Property File Number")
     deployment_engineer = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"", "class":"form-control"}), label="Deployment Engineer")
     radio_engineer = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"", "class":"form-control"}), label="Radio Engineer")
@@ -116,10 +119,23 @@ class PhyInfoForm(forms.ModelForm):
         fields = '__all__' 
 
 class RecordForm(forms.ModelForm):
-    asset_name = forms.CharField(required=True, widget=forms.Select(choices=Resource_name), label="Shared Resource")
+    category_choices = Resource.objects.values_list('asset_name', flat=True).distinct()           
+    asset_name = forms.ChoiceField(
+        required=False, 
+        choices=[(choice, choice) for choice in category_choices],
+        widget=forms.Select(attrs={'class': 'form-control'})
+        )
     booked_by =  forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="Name")
-    from_date =  forms.CharField(required=True, widget=forms.widgets.DateTimeInput(attrs={'class':'form-control','placeholder':'YYYY-MM-DD HH:MM'}), label="From")
-    to_date = forms.CharField(required=True, widget=forms.widgets.DateTimeInput(attrs={'class':'form-control','placeholder':'YYYY-MM-DD HH:MM'}), label="To")
+    from_date =  forms.DateTimeField(
+         required=True, 
+         widget=forms.widgets.DateTimeInput(format="%Y-%m-%dT%H:%M", attrs={"type": "datetime-local","class":"form-control"}), 
+         label="From"
+         )
+    to_date = forms.DateTimeField(
+         required=True, 
+         widget=forms.widgets.DateTimeInput(format="%Y-%m-%dT%H:%M", attrs={"type": "datetime-local","class":"form-control"}),
+         label="To"
+         )
     emp_number =  forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Emp Number'}))
     phone =  forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Mobile Number 027-xxxxxxxx'}))
     email =  forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Email'}))
@@ -136,3 +152,8 @@ class RecordForm(forms.ModelForm):
                   'email',
                   'purpose'
                   )
+
+class ResourceForm(ModelForm):
+    class Meta:
+         model = Resource
+         fields = '__all__'
