@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import SignUpForm, AddBasicInfoForm, PhyInfoForm, RecordForm, ResourceForm
 from .models import Resource, Site, PhyInfo, Record
@@ -52,39 +53,25 @@ def create_tnet(request): # tnet form creation, take necessary inputs only
 def create_celldata(request): #cell data creation, take necessary inputs only
     pass
 
+@login_required
 def book_resource(request): # create booking
-    # login_user = User.objects.filter(username=User.get_username)
-    # form = RecordForm(request.POST or None)
-    # if request.user.is_authenticated:
-    #     if request.method == "POST":
-    #         if form.is_valid():
-    #             form.save()
-    #             messages.success(request, "Booking Added...")
-    #             return redirect('book_resource')
-    #         else:
-    #     # Initialize the form with filtered data
-    #             if login_user.exists():
-    #                 initial_data = {'booked_by': login_user.first().username}
-    #                 form = RecordForm(initial=initial_data)
-    #             else:
-    #                 form = RecordForm()
-    #     return render(request, 'book_resource.html', {'form':form})
-    # else:
-    #     messages.success(request, "You Must Be Logged In...")
-    #     return redirect('home')
+    # user = request.user
+    # context = {'booked_by':f"{user.first_name}{user.last_name}",'email': user.email}
+    user = request.user
+    initial_data = {'booked_by':user.username, 'email': user.email}
+    if request.method == "POST":
+        form = RecordForm(request.POST, initial=initial_data)
+        if form.is_valid():
+            book_resource = form.save(commit=False)
+            book_resource.user = user
+            book_resource.save()
+            messages.success(request, "Basic information Added...")
+            render(request, 'testdata.html', initial_data)
+    else:
+        form = RecordForm(initial=initial_data) 
+    return render(request, 'book_resource.html', {'form': form})
 
-    #previous form
-	form = RecordForm(request.POST or None)
-	if request.user.is_authenticated:
-		if request.method == "POST":
-			if form.is_valid():
-				book_resource = form.save()
-				messages.success(request, "Basic information Added...")
-				return redirect('book_resource')
-		return render(request, 'book_resource.html', {'form':form})
-	else:
-		messages.success(request, "You Must Be Logged In...")
-		return redirect('home')
+ 
     
 def booking_record(request,pk): # to view specific booking and alter. 
     if request.user.is_authenticated:
@@ -94,7 +81,8 @@ def booking_record(request,pk): # to view specific booking and alter.
     else:
         messages.success(request, "You Must Be Logged In To View That Page...")
         return redirect('home')
-     
+
+ 
 def view_bookings(request): # to show all the bookings
     if request.user.is_authenticated:
         # Look up records

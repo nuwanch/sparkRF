@@ -1,0 +1,25 @@
+{% extends 'base.html'%}
+
+{% block content %}
+
+<div class="col-md-6 offset-md-3">
+
+<h1>Make Booking</h1>
+<br/>
+
+
+<form method="POST" action="{% url 'book_resource' %}">
+  {% csrf_token %}
+  <h1>Hello, {{ booked_by }}!</h1>
+  <h1>My email is , {{ email }}!</h1>
+
+  <!-- {{ form.as_p }} -->
+ 
+    <br/>
+    <button type="submit" class="btn btn-secondary">Book</button>
+     <a href="{% url 'view_bookings' %}" class="btn btn-secondary">Back</a>
+  
+</form>
+
+
+{% endblock %}

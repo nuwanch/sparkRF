@@ -136,19 +136,17 @@ class RecordForm(forms.ModelForm):
          widget=forms.widgets.DateTimeInput(format="%Y-%m-%dT%H:%M", attrs={"type": "datetime-local","class":"form-control"}),
          label="To"
          )
-    emp_number =  forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Emp Number'}))
-    phone =  forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Mobile Number 027-xxxxxxxx'}))
+    # emp_number =  forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Emp Number'}))
+    # phone =  forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Mobile Number 027-xxxxxxxx'}))
     email =  forms.CharField(required=True, widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Email'}))
     purpose =  forms.CharField(required=True, max_length=200, widget=forms.Textarea(attrs={'class':'form-control','placeholder':'Purpose'}))
     
     class Meta:
         model = Record  
         fields = ('asset_name',
-                  'booked_by', 
+                  'booked_by',
                   'from_date',
                   'to_date',
-                  'emp_number',
-                  'phone',
                   'email',
                   'purpose'
                   )

@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
    
@@ -74,6 +75,7 @@ class Resource(models.Model):
 #This model to make records above resource booking
 class Record(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     asset_name = models.CharField(max_length=50)
     booked_by =  models.CharField(max_length=100)
     from_date =  models.DateTimeField(null=True)
