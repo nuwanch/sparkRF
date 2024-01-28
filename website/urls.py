@@ -23,7 +23,7 @@ urlpatterns = [
     path('booking_record/<int:pk>', views.booking_record, name='booking_record'),
     path('update_booking/<int:pk>', views.update_booking, name='update_booking'),
     path('delete_booking/<int:pk>', views.delete_booking, name='delete_booking'),
-    path('create_resource', views.create_resource, name='create_resource'),
+    path('common_booking_view', views.common_booking_view, name='common_booking_view'),
        
    
 ]

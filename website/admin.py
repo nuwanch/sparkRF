@@ -8,3 +8,4 @@ admin.site.register(Site)
 admin.site.register(Resource)
 admin.site.register(Record)
 admin.site.register(PhyInfo)
+

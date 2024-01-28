@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 # Create your models here.
    
 #This model is to keep basic information about sites    
@@ -87,3 +88,7 @@ class Record(models.Model):
 	
     def __str__(self):
         return(f"{self.asset_name} {self.booked_by}")
+    
+
+
+ 

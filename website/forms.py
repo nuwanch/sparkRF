@@ -151,7 +151,20 @@ class RecordForm(forms.ModelForm):
                   'purpose'
                   )
 
-class ResourceForm(ModelForm):
-    class Meta:
-         model = Resource
-         fields = '__all__'
+class BookingFilterForm(forms.Form):
+    asset_name = forms.ChoiceField(choices=[], required=False,widget=forms.Select(attrs={'class': 'form-control'}))
+    from_date = forms.DateTimeField(
+         required=True, 
+         widget=forms.widgets.DateTimeInput(format="%Y-%m-%dT%H:%M", attrs={"type": "datetime-local","class":"form-control"}), 
+         label="From"
+         )
+    to_date = forms.DateTimeField(
+         required=True, 
+         widget=forms.widgets.DateTimeInput(format="%Y-%m-%dT%H:%M", attrs={"type": "datetime-local","class":"form-control"}),
+         label="To"
+         )
+
+    def __init__(self, *args, **kwargs):
+        super(BookingFilterForm, self).__init__(*args, **kwargs)
+        # Populate the 'resource_type' dropdown with unique values from the 'resource_type' column
+        self.fields['asset_name'].choices = [(resource_type, resource_type) for resource_type in Resource.objects.values_list('asset_name', flat=True).distinct()]

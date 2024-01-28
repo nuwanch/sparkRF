@@ -2,27 +2,28 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import SignUpForm, AddBasicInfoForm, PhyInfoForm, RecordForm, ResourceForm
+from .forms import SignUpForm, AddBasicInfoForm, PhyInfoForm, RecordForm, BookingFilterForm
 from .models import Resource, Site, PhyInfo, Record
 from django.contrib.auth.models import User
 import pandas as pd
 from django.http import HttpResponse
 import xlsxwriter
 from io import BytesIO
+from django.core.exceptions import ValidationError
 
 
 # Create your views here.
 
-def create_resource(request): # this is to create resources but I'm going to keep it for the admin, will remove in future
-    if request.method == 'POST':
-        form = ResourceForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('success_url')  # Redirect to a success page
-    else:
-        form = ResourceForm()
+# def create_resource(request): # this is to create resources but I'm going to keep it for the admin, will remove in future
+#     if request.method == 'POST':
+#         form = ResourceForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('success_url')  # Redirect to a success page
+#     else:
+#         form = ResourceForm()
 
-    return render(request, 'create_resource.html', {'form': form})
+    # return render(request, 'create_resource.html', {'form': form})
 
 def home(request): # this is the home login page
     records = Site.objects.all()
@@ -62,6 +63,13 @@ def book_resource(request): # create booking
     if request.method == "POST":
         form = RecordForm(request.POST, initial=initial_data)
         if form.is_valid():
+            new_booking_start = form.cleaned_data['from_date']
+            new_booking_end = form.cleaned_data['to_date']
+            try:
+                check_overlapping_bookings(form.cleaned_data['asset_name'], new_booking_start, new_booking_end)
+            except ValidationError as e:
+                form.add_error(None, e.message)
+                return render(request, 'book_resource.html', {'form': form})
             book_resource = form.save(commit=False)
             book_resource.user = user
             book_resource.save()
@@ -71,8 +79,6 @@ def book_resource(request): # create booking
         form = RecordForm(initial=initial_data) 
     return render(request, 'book_resource.html', {'form': form})
 
- 
-    
 def booking_record(request,pk): # to view specific booking and alter. 
     if request.user.is_authenticated:
         # Look up records
@@ -82,8 +88,27 @@ def booking_record(request,pk): # to view specific booking and alter.
         messages.success(request, "You Must Be Logged In To View That Page...")
         return redirect('home')
 
- 
-def view_bookings(request): # to show all the bookings
+def common_booking_view(request): # to filter resource and time period before make booking
+    if request.method == 'POST':
+        form = BookingFilterForm(request.POST)
+        if form.is_valid():
+            resource_type = form.cleaned_data['asset_name']
+            start_date = form.cleaned_data['from_date']
+            end_date = form.cleaned_data['to_date']
+
+            # Perform filtering based on user inputs
+            bookings = Record.objects.filter(
+                asset_name = resource_type,
+                from_date__range=[start_date, end_date]
+            )
+
+            return render(request, 'filtered_bookings.html', {'bookings': bookings, 'form': form})
+    else:
+        form = BookingFilterForm()
+
+    return render(request, 'filtered_bookings.html', {'form': form})
+
+def view_bookings(request): # to show bookings for specific resource
     if request.user.is_authenticated:
         # Look up records
         bookings = Record.objects.all()
@@ -269,3 +294,15 @@ def add_phy_info(request):
 	else:
 		messages.success(request, "You Must Be Logged In...")
 		return redirect('home')
+
+
+def is_overlapping(existing_start, existing_end, new_start, new_end):
+    return (new_start < existing_end) and (existing_start < new_end)
+
+def check_overlapping_bookings(resource, new_start, new_end):
+    existing_bookings = Record.objects.filter(asset_name=resource)
+
+    for booking in existing_bookings:
+        if is_overlapping(booking.from_date, booking.to_date, new_start, new_end):
+            raise ValidationError("Booking overlaps with an existing reservation.")
+            

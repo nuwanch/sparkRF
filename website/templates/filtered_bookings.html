@@ -1,0 +1,67 @@
+{% extends 'base.html'%}
+
+{% block content %}
+
+<div class="col-md-6 offset-md-3">
+
+<h1>Bookings</h1>
+<br/>
+
+<form method="post" action="{% url 'common_booking_view' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-secondary">Filter</button>
+</form>
+
+<br/>
+</div>
+
+<table class="table table-striped table-hover table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">Resource Name</th>
+        <th scope="col">Booked By</th>
+        <th scope="col">From</th>
+        <th scope="col">To</th>
+        <th scope="col">Phone Number</th>
+        <th scope="col">Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+
+  {% if bookings %}
+      {% for booking in bookings %}
+      <tr>
+        <td>{{booking.asset_name }}</td>
+        <td>{{booking.booked_by}}</td>
+        <td>{{ booking.from_date }}</td>
+        <td>{{ booking.to_date }}</td>
+        <td>{{ booking.purpose }}</td>
+        <td><a href="{% url 'booking_record' booking.id %}">{{ booking.id }}</a></td>
+      </tr>
+      {% endfor %}
+    
+      
+  {% endif %}
+
+      </tbody>
+  </table>
+  <a href="{% url 'book_resource' %}" class="btn btn-secondary">Make Booking</a>
+
+
+
+
+
+<!-- {% if bookings %}
+    <h3>Filtered Bookings:</h3>
+    <ul>
+        {% for booking in bookings %}
+            <li>{{ booking }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No bookings match the criteria.</p>
+{% endif %} -->
+
+
+{% endblock %}
