@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import SignUpForm, AddBasicInfoForm, PhyInfoForm, RecordForm, BookingFilterForm
+from .forms import SignUpForm, AddBasicInfoForm, PhyInfoForm, RecordForm, BookingFilterForm, AlphaCheckForm
 from .models import Resource, Site, PhyInfo, Record
 from django.contrib.auth.models import User
 import pandas as pd
@@ -43,7 +43,24 @@ def home(request): # this is the home login page
         return render(request, 'home.html', {'records':records})
 
 def reserve_alphacode(request): # alpha code reservation, self verification
-    pass
+    if request.method == 'POST':
+        form = AlphaCheckForm(request.POST)
+        if form.is_valid():
+            # Check for the existence of the product name before saving
+            site_alpha = form.cleaned_data['site_alpha']
+            if Site.objects.filter(site_alpha=site_alpha).exists():
+                messages.success(request, "This site alpha is already taken. Please choose a different one.")
+                # form.add_error('site_alpha', '')
+            else:
+                # Save the form if the product name is unique
+                form.save()
+                messages.success(request, "This site alpha is available to use.")
+                return redirect('reserve_alphacode')  # Redirect to the product list or any other view
+                
+    else:
+        form =  AlphaCheckForm()
+
+    return render(request, 'alpha_checker.html', {'form':form})
 
 def create_rfreport(request): # rf report creation, take necessary inputs only
     pass

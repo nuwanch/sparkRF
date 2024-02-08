@@ -9,7 +9,7 @@ class Site(models.Model):
     created_at = models.DateTimeField(auto_now_add=True) 
     site_name = models.CharField(max_length=50)  
     site_alpha = models.CharField(max_length=10) 
-    proposedRFS_date = models.DateField()
+    proposedRFS_date = models.DateField(blank=True, null=True)
     transportable_cow = models.CharField(max_length=50)
     cow_name = models.CharField(max_length=100)
     easting = models.FloatField(null=True)

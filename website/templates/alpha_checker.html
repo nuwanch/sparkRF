@@ -1,0 +1,20 @@
+{% extends 'base.html'%}
+
+{% block content %}
+
+<div class="col-md-6 offset-md-3">
+
+<h1>Alpha Code Check</h1>
+<br/>
+
+
+<form method="post" action="{% url 'reserve_alphacode' %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  
+  <button type="submit" class="btn btn-secondary">check</button>
+  <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+</form>
+
+
+{% endblock %}

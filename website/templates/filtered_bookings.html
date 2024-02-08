@@ -17,30 +17,40 @@
 </div>
 
 <div id="calendar"></div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   var calendarEl = document.getElementById('calendar');
+
   var calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',  // Set the initial view to month
-    events: [
-      {% if bookings %}
-      <h1>we have bookings</h1>
-        {% for booking in bookings %}
-          {
-            title: '{{ booking.booked_by }}',
-            start: '{{ booking.from_date|date:"Y-m-d\TH:i:s" }}',  // Format start date as required
-            end: '{{ booking.to_date|date:"Y-m-d\TH:i:s" }}'      // Format end date as required
-          },
-        {% endfor %}
-      {% endif %}
-    ],
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay'
+    eventClick: function(info) {
+      var eventObj = info.event;
+
+      if (eventObj.url) {
+        alert(
+          'Clicked ' + eventObj.title + '.\n' +
+          'Will open ' + eventObj.url + ' in a new tab'
+        );
+
+        window.open(eventObj.url);
+
+        info.jsEvent.preventDefault(); // prevents browser from following link in current tab.
+      } else {
+        alert('Clicked ' + eventObj.title);
+      }
     },
-    // Customize other options as needed
+    events: [
+      {% for booking in bookings %}
+        {
+          title: '{{ booking.booked_by }}',
+          start: '{{ booking.from_date|date:"Y-m-d H:i" }}',
+          end: '{{ booking.to_date|date:"Y-m-d H:i" }}',
+          url: '{http://127.0.0.1:8000/view_siteinfo}',
+        },
+      {% endfor %}
+    ]
   });
+
   calendar.render();
 });
 </script>

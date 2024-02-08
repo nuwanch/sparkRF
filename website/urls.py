@@ -24,6 +24,5 @@ urlpatterns = [
     path('update_booking/<int:pk>', views.update_booking, name='update_booking'),
     path('delete_booking/<int:pk>', views.delete_booking, name='delete_booking'),
     path('common_booking_view', views.common_booking_view, name='common_booking_view'),
-       
-   
+    path('reserve_alphacode', views.reserve_alphacode, name='reserve_alphacode'),
 ]

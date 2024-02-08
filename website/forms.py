@@ -168,3 +168,10 @@ class BookingFilterForm(forms.Form):
         super(BookingFilterForm, self).__init__(*args, **kwargs)
         # Populate the 'resource_type' dropdown with unique values from the 'resource_type' column
         self.fields['asset_name'].choices = [(resource_type, resource_type) for resource_type in Resource.objects.values_list('asset_name', flat=True).distinct()]
+
+class AlphaCheckForm(forms.ModelForm):
+    class Meta:
+        model = Site
+        fields = ['site_alpha']
+
+   
