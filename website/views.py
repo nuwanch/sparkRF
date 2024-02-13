@@ -161,7 +161,7 @@ def view_siteinfo(request): # view total site info
     if request.user.is_authenticated:
         # Look up records
         records = Site.objects.all()
-        return render(request, 'users.html', {'records':records})
+        return render(request, 'view_sites.html', {'records':records})
     else:
         messages.success(request, "You Must Be Logged In To View That Page...")
         return redirect('home')
@@ -207,7 +207,7 @@ def delete_record(request, pk): #to delete a site
 		messages.success(request, "You Must Be Logged In To Do That...")
 		return redirect('home')
 
-def add_record(request):
+def add_record(request):# tnet form 
 	form = AddBasicInfoForm(request.POST or None)
 	if request.user.is_authenticated:
 		if request.method == "POST":
@@ -312,11 +312,13 @@ def add_phy_info(request):
 		messages.success(request, "You Must Be Logged In...")
 		return redirect('home')
 
-
-def is_overlapping(existing_start, existing_end, new_start, new_end):
+def test_pass(request):
+    return render(request, 'test.html')
+     
+def is_overlapping(existing_start, existing_end, new_start, new_end): #checking booking overlapping
     return (new_start < existing_end) and (existing_start < new_end)
 
-def check_overlapping_bookings(resource, new_start, new_end):
+def check_overlapping_bookings(resource, new_start, new_end): #main function for checking booking overlapping
     existing_bookings = Record.objects.filter(asset_name=resource)
 
     for booking in existing_bookings:

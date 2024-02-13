@@ -25,4 +25,5 @@ urlpatterns = [
     path('delete_booking/<int:pk>', views.delete_booking, name='delete_booking'),
     path('common_booking_view', views.common_booking_view, name='common_booking_view'),
     path('reserve_alphacode', views.reserve_alphacode, name='reserve_alphacode'),
+    path('test_pass', views.test_pass, name='test_pass'),
 ]

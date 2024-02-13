@@ -89,6 +89,79 @@ class Record(models.Model):
     def __str__(self):
         return(f"{self.asset_name} {self.booked_by}")
     
+#This model use to take the required data to create RF report
+class RFReportDataCommon(models.Model):
+    site_name = models.CharField(max_length=50)  
+    address_street = models.CharField(max_length=100, null=True)
+    address_suburb = models.CharField(max_length=100, null=True)
+    address_city = models.CharField(max_length=100, null=True)
+    author = models.CharField(max_length=100, null=True)
+    qualifications = models.CharField(max_length=100, null=True)
+    reviewer = models.CharField(max_length=100, null=True)
+    created_date = models.DateField(auto_now_add=True)
+    site_type = models.CharField(max_length=100, null=True) # New,Upgraded,Roadside
+    comments = models.CharField(max_length=500, null=True)
+
+    
+    def __str__(self):
+        return(f"{self.site_name} {self.author}")
+    
+
+class RFReportDataSpecific(models.Model): #making a seperate table to hold sector and band specific data with the sitename as the foreign key
+    site_name = models.CharField(max_length=50, null=True)
+    sector_name = models.CharField(max_length=50, null=True) #first,second,third, omni, paging,LoRa, eMDR
+    sector_azimuth_range = models.CharField(max_length=50, null=True)
+    sector_azimuth = models.IntegerField(null=True)
+    sector_band = models.CharField(max_length=50, null=True)
+    sector_carrier_power = models.FloatField(null=True)
+    sector_num_of_carriers = models.IntegerField(null=True)
+    sector_tx_filter_loss = models.FloatField(null=True)
+    sector_combiner_loss = models.FloatField(null=True)
+    sector_feeder_loss = models.FloatField(null=True)
+
+    def __str__(self):
+        return(f"{self.site_name} {self.sector_name}")
+    
+class AntennaTable(models.Model): #store antenna information and admin can update when new antennas are introduced
+    type = models.CharField(max_length=50, null=True) 
+    vendor = models.CharField(max_length=100, null=True) 
+    model = models.CharField(max_length=100, null=True)
+    usage = models.CharField(max_length=50, null=True)
+    status = models.CharField(max_length=100, null=True)
+    frequency_range = models.CharField(max_length=50, null=True)
+    num_low_ports = models.IntegerField(null=True)
+    num_high_ports = models.IntegerField(null=True)
+    weight = models.FloatField(null=True)
+    dimesons = models.CharField(max_length=50, null=True) 
+    band600_gain = models.FloatField(null=True)
+    band700_gain = models.FloatField(null=True)
+    band850_gain = models.FloatField(null=True)
+    band1800_gain = models.FloatField(null=True)
+    band2100_gain = models.FloatField(null=True)
+    band2300_gain = models.FloatField(null=True)
+    band2600_gain = models.FloatField(null=True)
+    band3500_gain = models.FloatField(null=True)
+    hbw = models.FloatField(null=True)
+    band600_vbw = models.FloatField(null=True)
+    band700_vbw = models.FloatField(null=True)
+    band850_vbw = models.FloatField(null=True)
+    band1800_vbw = models.FloatField(null=True)
+    band2100_vbw = models.FloatField(null=True)
+    band2300_vbw = models.FloatField(null=True)
+    band2600_vbw = models.FloatField(null=True)
+    band3500_vbw = models.FloatField(null=True)
+    freq_low = models.FloatField(null=True)
+    freq_high = models.FloatField(null=True)
+    connectiors = models.CharField(max_length=10, null=True)
+    bracket_weight = models.FloatField(null=True)
+    size = models.CharField(max_length=10, null=True)
+    comments = models.CharField(max_length=100, null=True)
+
+    def __str__(self):
+        return(f"{self.vendor} {self.model}")
+    
+
+
 
 
  
