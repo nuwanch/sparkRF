@@ -90,7 +90,7 @@ def book_resource(request): # create booking
             book_resource = form.save(commit=False)
             book_resource.user = user
             book_resource.save()
-            messages.success(request, "Basic information Added...")
+            messages.success(request, "Booking Confirmed...")
             render(request, 'testdata.html', initial_data)
     else:
         form = RecordForm(initial=initial_data) 
@@ -324,4 +324,5 @@ def check_overlapping_bookings(resource, new_start, new_end): #main function for
     for booking in existing_bookings:
         if is_overlapping(booking.from_date, booking.to_date, new_start, new_end):
             raise ValidationError("Booking overlaps with an existing reservation.")
+        
             
