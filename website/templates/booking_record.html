@@ -6,8 +6,7 @@
 <div class="card">
 
   <div class="card-header"><strong>
-    {{ booking_record.asset_name }} 
-    {{ booking_record.booked_by }}</strong>
+    Booking Information </strong>
   </div>
   <div class="card-body"> 
 
@@ -31,7 +30,7 @@
 
 <br/><br/>
 <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
-<a href="{% url 'delete_booking' booking_record.id %}" class="btn btn-danger">Delete</a>
-<a href="{% url 'update_booking' booking_record.id %}" class="btn btn-secondary">Update </a>
+<!-- <a href="{% url 'delete_booking' booking_record.id %}" class="btn btn-danger">Delete</a> -->
+<a href="{% url 'book_resource'%}" class="btn btn-secondary">Make a booking </a>
 
 {% endblock %}

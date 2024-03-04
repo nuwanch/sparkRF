@@ -4,7 +4,7 @@
 
 <div class="col-md-6 offset-md-3">
 
-<h1>Bookings</h1>
+<h1>Check Bookings</h1>
 <br/>
 
 <form method="post" action="{% url 'common_booking_view' %}">
@@ -28,8 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
       if (eventObj.url) {
         alert(
-          'Clicked ' + eventObj.title + '.\n' +
-          'Will open ' + eventObj.url + ' in a new tab'
+          'There is a booking by ' + eventObj.title + '.\n' +
+          'Click ok to check further information'
         );
 
         window.open(eventObj.url);
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
           title: '{{ booking.booked_by }}',
           start: '{{ booking.from_date|date:"Y-m-d H:i" }}',
           end: '{{ booking.to_date|date:"Y-m-d H:i" }}',
-          url: '{http://127.0.0.1:8000/view_siteinfo}',
+          url: '/booking_record/{{booking.id}}',
         },
       {% endfor %}
     ]
