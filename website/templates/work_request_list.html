@@ -1,0 +1,15 @@
+{% extends 'base.html'%}
+
+{% block content %}
+
+<div class="col-md-6 offset-md-3">
+
+<h1>Work Requests</h1>
+<ul>
+    {% for work_request in work_requests %}
+        <li>{{ work_request.subject }} - Requested by: {{ work_request.requesting_engineer.username }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'create_work_request' %}">Create Work Request</a>
+
+{% endblock %}

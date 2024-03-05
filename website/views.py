@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import SignUpForm, AddBasicInfoForm, PhyInfoForm, RecordForm, BookingFilterForm, AlphaCheckForm
-from .models import Resource, Site, PhyInfo, Record
+from .forms import SignUpForm, AddBasicInfoForm, PhyInfoForm, RecordForm, BookingFilterForm, AlphaCheckForm, WorkRequestForm
+from .models import Resource, Site, PhyInfo, Record, WorkRequest
 from django.contrib.auth.models import User
 import pandas as pd
 from django.http import HttpResponse
@@ -312,9 +312,6 @@ def add_phy_info(request):
 		messages.success(request, "You Must Be Logged In...")
 		return redirect('home')
 
-def test_pass(request):
-    return render(request, 'test.html')
-     
 def is_overlapping(existing_start, existing_end, new_start, new_end): #checking booking overlapping
     return (new_start < existing_end) and (existing_start < new_end)
 
@@ -325,4 +322,20 @@ def check_overlapping_bookings(resource, new_start, new_end): #main function for
         if is_overlapping(booking.from_date, booking.to_date, new_start, new_end):
             raise ValidationError("Booking overlaps with an existing reservation.")
         
-            
+def work_request_list(request):
+    work_requests = WorkRequest.objects.all()
+    return render(request, 'work_request_list.html', {'work_requests': work_requests})
+
+def create_work_request(request):
+    if request.method == 'POST':
+        form = WorkRequestForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('work_request_list')
+    else:
+        form = WorkRequestForm()
+
+    return render(request, 'create_work_request.html', {'form': form})
+
+def test_pass(request):
+    return render(request, 'test.html')

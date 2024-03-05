@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
-from .models import Site, Resource, Record, PhyInfo, AntennaTable, RFReportDataCommon, RFReportDataSpecific
+from .models import Site, Resource, Record, PhyInfo, AntennaTable, RFReportDataCommon, RFReportDataSpecific, WorkRequest
 from django.forms import ModelForm
 
 
@@ -174,8 +174,9 @@ class AlphaCheckForm(forms.ModelForm):
         model = Site
         fields = ['site_alpha']
 
-# class AntennaTableForm(forms.ModelForm):
-#     class Meta:
-#         model = AntennaTable
-#         fields = '__all__'
+class WorkRequestForm(forms.ModelForm):
+    class Meta:
+        model = WorkRequest
+        fields = '__all__'
+
 

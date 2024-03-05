@@ -26,4 +26,6 @@ urlpatterns = [
     path('common_booking_view', views.common_booking_view, name='common_booking_view'),
     path('reserve_alphacode', views.reserve_alphacode, name='reserve_alphacode'),
     path('test_pass', views.test_pass, name='test_pass'),
+    path('work_request_list', views.work_request_list, name='work_request_list'),
+    path('create_work_request', views.create_work_request, name='create_work_request'),
 ]
