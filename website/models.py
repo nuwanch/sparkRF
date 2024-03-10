@@ -163,14 +163,14 @@ class AntennaTable(models.Model): #store antenna information and admin can updat
 
 
 class WorkRequest(models.Model): #To make work requests to engineers
-    requesting_engineer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='requesting_engineer')
-    assigned_engineer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_engineer')
+    requesting_engineer = models.CharField(max_length=255)
+    assigned_engineer = models.CharField(max_length=255)
     allocated_hours = models.DecimalField(max_digits=5, decimal_places=2)
     start_date = models.DateField()
     end_date = models.DateField()
-    work_description = models.TextField()
+    work_description = models.TextField(max_length=255)
     subject = models.CharField(max_length=255)
-    attachments = models.FileField(upload_to='work_request_attachments/', blank=True, null=True)
+    attachments = models.FileField(upload_to='media/work_request_attachments/', blank=True, null=True)
 
     def __str__(self):
         return f"{self.subject} - Requested by: {self.requesting_engineer.username}"

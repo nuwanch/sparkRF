@@ -2,14 +2,40 @@
 
 {% block content %}
 
-<div class="col-md-6 offset-md-3">
+<div>
 
-<h1>Work Requests</h1>
-<ul>
-    {% for work_request in work_requests %}
-        <li>{{ work_request.subject }} - Requested by: {{ work_request.requesting_engineer.username }}</li>
-    {% endfor %}
-</ul>
-<a href="{% url 'create_work_request' %}">Create Work Request</a>
+    <div>
+        <h1>Work Requests</h1>
+        <table class="table table-striped table-hover table-bordered">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Requesting Engineer</th>
+              <th scope="col">Assigned Enginner</th>
+              <th scope="col">Subject</th>
+              <th scope="col">From</th>
+              <th scope="col">To</th>
+              <th scope="col">Allocated Hours</th>
+              <th scope="col">Request No</th>
+            </tr>
+          </thead>
+          <tbody>
+    
+        {% if requests %}
+            {% for request in requests %}
+            <tr>
+              <td>{{request.requesting_engineer }}</td>
+              <td>{{request.assigned_engineer}}</td>
+              <td>{{request.subject}}</td>
+              <td>{{request.start_date }}</td>
+              <td>{{request.end_date }}</td>
+              <td>{{request.allocated_hours }}</td>
+              <td><a href="{% url 'request_record' request.id %}">{{ request.id }}</a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>  
+        {% endif %}
+    </div>
+<a href="{% url 'create_work_request' %}" class="btn btn-secondary">Create Work Request</a>
 
-{% endblock %}
+{% endblock %} 

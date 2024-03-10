@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<div class="card">
+
+  <div class="card-header"><strong>
+    Work Request Information </strong>
+  </div>
+  <div class="card-body"> 
+  
+  <p class="card-text">
+  <strong>Subject: </strong>{{ request_record.subject }}</p>
+
+  <p class="card-text">
+  <strong>Requesting Engineer: </strong>{{ request_record.requesting_engineer }}</p>
+
+  <p class="card-text">
+  <strong>Booked By: </strong>{{ request_record.assigned_engineer }}</p>
+      
+  <p class="card-text">
+  <strong>From: </strong>{{ request_record.start_date }}</p>
+      
+  <p class="card-text">
+  <strong>To: </strong>{{ request_record.end_date }}</p>
+      
+  <p class="card-text">
+  <strong>Allocated Hours: </strong>{{ request_record.allocated_hours }}</p>
+
+  <p class="card-text">
+  <strong>Work Description: </strong>{{ request_record.work_description }}</p>
+
+  <p class="card-text">
+  <strong>Attachments: </strong>
+  <a href="{{ request_record.attachments.url }}" target="_blank">{{ request_record.attachments.name }}</a></p>  
+  </div>
+</div>
+
+<br/><br/>
+<a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+<a href="{% url 'create_work_request'%}" class="btn btn-secondary">Make a Request </a>
+
+{% endblock %}

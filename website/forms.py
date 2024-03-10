@@ -175,6 +175,28 @@ class AlphaCheckForm(forms.ModelForm):
         fields = ['site_alpha']
 
 class WorkRequestForm(forms.ModelForm):
+    requesting_engineer = forms.ChoiceField(choices=[],widget=forms.Select(attrs={'class': 'form-control'}), label="Requesting Engineer")
+    assigned_engineer = forms.ChoiceField(choices=[],widget=forms.Select(attrs={'class': 'form-control'}), label="Assigned Engineer")
+    allocated_hours = forms.FloatField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Estimated Completion Time", "class":"form-control"}))
+    start_date = forms.DateTimeField(
+         required=True, 
+         widget=forms.widgets.DateInput(format="%Y-%m-%d", attrs={"type": "datetime-local","class":"form-control"}),
+         label="From"
+         )
+    end_date = forms.DateTimeField(
+         required=True, 
+         widget=forms.widgets.DateInput(format="%Y-%m-%d", attrs={"type": "datetime-local","class":"form-control"}),
+         label="To"
+         )
+    work_description = forms.CharField(required=True, max_length=200, widget=forms.widgets.Textarea(attrs={"class":"form-control"}),label="Work Description") 
+    subject = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"})) 
+    
+    def __init__(self, *args, **kwargs):
+         super(WorkRequestForm, self).__init__(*args, **kwargs)
+         #Populate the 'resource_type' dropdown with unique values from the 'resource_type' column
+         self.fields['requesting_engineer'].choices = [(name, name) for name in User.objects.values_list('username', flat=True).distinct()]
+         self.fields['assigned_engineer'].choices = [(name, name) for name in User.objects.values_list('username', flat=True).distinct()]
+        
     class Meta:
         model = WorkRequest
         fields = '__all__'

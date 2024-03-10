@@ -28,4 +28,6 @@ urlpatterns = [
     path('test_pass', views.test_pass, name='test_pass'),
     path('work_request_list', views.work_request_list, name='work_request_list'),
     path('create_work_request', views.create_work_request, name='create_work_request'),
+    path('request_record/<int:pk>', views.request_record, name='request_record'),
+    
 ]

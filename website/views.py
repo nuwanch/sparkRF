@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,  get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -323,8 +323,13 @@ def check_overlapping_bookings(resource, new_start, new_end): #main function for
             raise ValidationError("Booking overlaps with an existing reservation.")
         
 def work_request_list(request):
-    work_requests = WorkRequest.objects.all()
-    return render(request, 'work_request_list.html', {'work_requests': work_requests})
+    if request.user.is_authenticated:
+        # Look up records
+        requests = WorkRequest.objects.all()
+        return render(request, 'work_request_list.html', {'requests':requests})
+    else:
+        messages.success(request, "You Must Be Logged In To View That Page...")
+        return redirect('home')
 
 def create_work_request(request):
     if request.method == 'POST':
@@ -336,6 +341,17 @@ def create_work_request(request):
         form = WorkRequestForm()
 
     return render(request, 'create_work_request.html', {'form': form})
+
+def request_record(request,pk): # to view specific booking and alter. 
+    if request.user.is_authenticated:
+        # Look up records
+        request_record = WorkRequest.objects.get(id=pk)
+        # work_request = get_object_or_404(WorkRequest, pk=pk)
+        return render(request, 'request_record.html', {'request_record':request_record})
+    else:
+        messages.success(request, "You Must Be Logged In To View That Page...")
+        return redirect('home')
+
 
 def test_pass(request):
     return render(request, 'test.html')
