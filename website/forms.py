@@ -201,4 +201,7 @@ class WorkRequestForm(forms.ModelForm):
         model = WorkRequest
         fields = '__all__'
 
-
+class RFReportConfigurationForm(forms.ModelForm):
+    class Meta:
+        model = RFReportDataSpecific
+        fields = '__all__'  # You can specify specific fields if needed

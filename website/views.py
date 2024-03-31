@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect,  get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import SignUpForm, AddBasicInfoForm, PhyInfoForm, RecordForm, BookingFilterForm, AlphaCheckForm, WorkRequestForm
-from .models import Resource, Site, PhyInfo, Record, WorkRequest
+from .forms import SignUpForm, AddBasicInfoForm, PhyInfoForm, RecordForm, BookingFilterForm, AlphaCheckForm, WorkRequestForm, RFReportConfigurationForm
+from .models import Resource, Site, PhyInfo, Record, WorkRequest, RFReportDataSpecific
 from django.contrib.auth.models import User
 import pandas as pd
 from django.http import HttpResponse
@@ -352,6 +352,15 @@ def request_record(request,pk): # to view specific booking and alter.
         messages.success(request, "You Must Be Logged In To View That Page...")
         return redirect('home')
 
-
+def site_configuration_form(request):
+    if request.method == 'POST':
+        form = RFReportConfigurationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('success_page')  # Redirect to a success page or any other URL
+    else:
+        form = RFReportConfigurationForm()
+    
+    return render(request, 'rf_report_configuration_form.html', {'form': form})
 def test_pass(request):
     return render(request, 'test.html')

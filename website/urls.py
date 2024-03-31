@@ -29,5 +29,7 @@ urlpatterns = [
     path('work_request_list', views.work_request_list, name='work_request_list'),
     path('create_work_request', views.create_work_request, name='create_work_request'),
     path('request_record/<int:pk>', views.request_record, name='request_record'),
+    path('site_configuration_form', views.site_configuration_form, name='site_configuration_form'),
+
     
 ]

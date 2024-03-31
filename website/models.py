@@ -105,19 +105,85 @@ class RFReportDataCommon(models.Model):
     
     def __str__(self):
         return(f"{self.site_name} {self.author}")
-    
+
+class WorkRequest(models.Model): #To make work requests to engineers
+    requesting_engineer = models.CharField(max_length=255)
+    assigned_engineer = models.CharField(max_length=255)
+    allocated_hours = models.DecimalField(max_digits=5, decimal_places=2)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    work_description = models.TextField(max_length=255)
+    subject = models.CharField(max_length=255)
+    attachments = models.FileField(upload_to='media/work_request_attachments/', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.subject} - Requested by: {self.requesting_engineer.username}"    
 
 class RFReportDataSpecific(models.Model): #making a seperate table to hold sector and band specific data with the sitename as the foreign key
+    site_alpha = models.CharField(max_length=10,null=True)
     site_name = models.CharField(max_length=50, null=True)
-    sector_name = models.CharField(max_length=50, null=True) #first,second,third, omni, paging,LoRa, eMDR
-    sector_azimuth_range = models.CharField(max_length=50, null=True)
-    sector_azimuth = models.IntegerField(null=True)
-    sector_band = models.CharField(max_length=50, null=True)
-    sector_carrier_power = models.FloatField(null=True)
-    sector_num_of_carriers = models.IntegerField(null=True)
-    sector_tx_filter_loss = models.FloatField(null=True)
-    sector_combiner_loss = models.FloatField(null=True)
-    sector_feeder_loss = models.FloatField(null=True)
+    site_address = models.CharField(max_length=200,null=True)
+    author = models.CharField(max_length=50, null=True)
+    reviewer = models.CharField(max_length=50, null=True)
+    approver = models.CharField(max_length=50, null=True)
+    report_date = models.DateField(null=True)
+    qualification = models.CharField(max_length=50, null=True)
+    enable_l7 = models.CharField(max_length=50, null=True)
+    enable_l18 = models.CharField(max_length=50, null=True)
+    enable_l21 = models.CharField(max_length=50, null=True)
+    enable_l23 = models.CharField(max_length=50, null=True)
+    enable_l26 = models.CharField(max_length=50, null=True)
+    enable_nr850 = models.CharField(max_length=50, null=True)
+    enable_nr3500 = models.CharField(max_length=50, null=True)
+    feeder_length = models.FloatField(null=True) # use the lowest antenna height
+    feeder_dimension = models.FloatField(null=True)
+    no_sectors = models.IntegerField(null=True)
+    sector_type = models.CharField(max_length=50, null=True) #directive, omni, paging,LoRa, eMDR
+    # this will come up in a different page, above are common for site
+    sector1_azimuth_range = models.CharField(max_length=50, null=True)
+    sector1_azimuth = models.IntegerField(null=True)
+    sector2_azimuth_range = models.CharField(max_length=50, null=True)
+    sector2_azimuth = models.IntegerField(null=True)
+    sector3_azimuth_range = models.CharField(max_length=50, null=True)
+    sector3_azimuth = models.IntegerField(null=True)
+    l7_sector_carrier_power = models.FloatField(null=True)
+    l7_sector_num_of_carriers = models.IntegerField(null=True)
+    l7_sector_tx_filter_type = models.FloatField(null=True)
+    l7_sector_combiner_type = models.FloatField(null=True)
+    l7_hardware_in_cabinet_or_not = models.BooleanField(null=True)
+    l18_sector_carrier_power = models.FloatField(null=True)
+    l18_sector_num_of_carriers = models.IntegerField(null=True)
+    l18_sector_tx_filter_type = models.FloatField(null=True)
+    l18_sector_combiner_type = models.FloatField(null=True)
+    l18_hardware_in_cabinet_or_not = models.BooleanField(null=True)
+    l21_sector_carrier_power = models.FloatField(null=True)
+    l21_sector_num_of_carriers = models.IntegerField(null=True)
+    l21_sector_tx_filter_type = models.FloatField(null=True)
+    l21_sector_combiner_type = models.FloatField(null=True)
+    l21_hardware_in_cabinet_or_not = models.BooleanField(null=True)
+    l23_sector_carrier_power = models.FloatField(null=True)
+    l23_sector_num_of_carriers = models.IntegerField(null=True)
+    l23_sector_tx_filter_type = models.FloatField(null=True)
+    l23_sector_combiner_type = models.FloatField(null=True)
+    l23_hardware_in_cabinet_or_not = models.BooleanField(null=True)
+    l26_sector_carrier_power = models.FloatField(null=True)
+    l26_sector_num_of_carriers = models.IntegerField(null=True)
+    l26_sector_tx_filter_type = models.FloatField(null=True)
+    l26_sector_combiner_type = models.FloatField(null=True)
+    l26_hardware_in_cabinet_or_not = models.BooleanField(null=True)
+    nr85_sector_carrier_power = models.FloatField(null=True)
+    nr85_sector_num_of_carriers = models.IntegerField(null=True)
+    nr85_sector_tx_filter_type = models.FloatField(null=True)
+    nr85_sector_combiner_type = models.FloatField(null=True)
+    nr85_hardware_in_cabinet_or_not = models.BooleanField(null=True)
+    nr35_sector_carrier_power = models.FloatField(null=True)
+    nr35_sector_num_of_carriers = models.IntegerField(null=True)
+    nr35_sector_tx_filter_type = models.FloatField(null=True)
+    nr35_sector_combiner_type = models.FloatField(null=True)
+    nr35_hardware_in_cabinet_or_not = models.BooleanField(null=True)
+
+    
+
 
     def __str__(self):
         return(f"{self.site_name} {self.sector_name}")
@@ -156,25 +222,94 @@ class AntennaTable(models.Model): #store antenna information and admin can updat
     bracket_weight = models.FloatField(null=True)
     size = models.CharField(max_length=10, null=True)
     comments = models.CharField(max_length=100, null=True)
+    quantity_in_hand = models.IntegerField(null=True)
 
     def __str__(self):
         return(f"{self.vendor} {self.model}")
     
-
-
-class WorkRequest(models.Model): #To make work requests to engineers
-    requesting_engineer = models.CharField(max_length=255)
-    assigned_engineer = models.CharField(max_length=255)
-    allocated_hours = models.DecimalField(max_digits=5, decimal_places=2)
-    start_date = models.DateField()
-    end_date = models.DateField()
-    work_description = models.TextField(max_length=255)
-    subject = models.CharField(max_length=255)
-    attachments = models.FileField(upload_to='media/work_request_attachments/', blank=True, null=True)
+class RHTable(models.Model): #store Radio hardware resource information
+    type = models.CharField(max_length=50, null=True) 
+    vendor = models.CharField(max_length=100, null=True) 
+    model = models.CharField(max_length=100, null=True)
+    usage = models.CharField(max_length=50, null=True)
+    status = models.CharField(max_length=100, null=True)
+    frequency_range = models.CharField(max_length=50, null=True)
+    num_tx_ports = models.IntegerField(null=True)
+    num_rx_ports = models.IntegerField(null=True)
+    pa_power = models.IntegerField(null=True)
+    weight = models.FloatField(null=True)
+    dimesons = models.CharField(max_length=50, null=True)
+    comments = models.CharField(max_length=100, null=True)
+    quantity_in_hand = models.IntegerField(null=True)
 
     def __str__(self):
-        return f"{self.subject} - Requested by: {self.requesting_engineer.username}"
+        return(f"{self.vendor} {self.model}")
 
+class CombinerTable(models.Model): #store combiner/coupler information
+    type = models.CharField(max_length=50, null=True) 
+    vendor = models.CharField(max_length=100, null=True) 
+    model = models.CharField(max_length=100, null=True)
+    usage = models.CharField(max_length=50, null=True)
+    status = models.CharField(max_length=100, null=True)
+    insertion_loss = models.FloatField(null=True)
+    comments = models.CharField(max_length=100, null=True)
+    quantity_in_hand = models.IntegerField(null=True)
 
+    def __str__(self):
+        return(f"{self.vendor} {self.model}")
 
- 
+class FilterTable(models.Model): #store filter information
+    type = models.CharField(max_length=50, null=True) 
+    vendor = models.CharField(max_length=100, null=True) 
+    model = models.CharField(max_length=100, null=True)
+    usage = models.CharField(max_length=50, null=True)
+    status = models.CharField(max_length=100, null=True)
+    insertion_loss = models.FloatField(null=True)
+    comments = models.CharField(max_length=100, null=True)
+    quantity_in_hand = models.IntegerField(null=True)
+
+    def __str__(self):
+        return(f"{self.vendor} {self.model}")
+
+class BBPTable(models.Model): # store baseband processing card information
+    type = models.CharField(max_length=50, null=True) 
+    vendor = models.CharField(max_length=100, null=True) 
+    model = models.CharField(max_length=100, null=True)
+    usage = models.CharField(max_length=50, null=True)
+    status = models.CharField(max_length=100, null=True)
+    lte_cell_capacity = models.IntegerField(null=True)
+    nr_cell_capacity = models.IntegerField(null=True)
+    comments = models.CharField(max_length=100, null=True)
+    quantity_in_hand = models.IntegerField(null=True)
+
+    def __str__(self):
+        return(f"{self.vendor} {self.model}")
+    
+class MPTTable(models.Model): # store main processing and transmission card information
+    ype = models.CharField(max_length=50, null=True) 
+    vendor = models.CharField(max_length=100, null=True) 
+    model = models.CharField(max_length=100, null=True)
+    usage = models.CharField(max_length=50, null=True)
+    status = models.CharField(max_length=100, null=True)
+    lte_cell_capacity = models.IntegerField(null=True)
+    nr_cell_capacity = models.IntegerField(null=True)
+    comments = models.CharField(max_length=100, null=True)
+    quantity_in_hand = models.IntegerField(null=True)
+
+    def __str__(self):
+        return(f"{self.vendor} {self.model}")
+    
+class FeederTable(models.Model): # store feeder information
+    type = models.CharField(max_length=50, null=True) 
+    vendor = models.CharField(max_length=100, null=True) 
+    feeder_dimension = models.CharField(max_length=100, null=True)
+    L7_loss_per_meter = models.CharField(max_length=50, null=True)
+    L18_loss_per_meter = models.CharField(max_length=50, null=True)
+    L21_loss_per_meter = models.CharField(max_length=50, null=True)
+    L23_loss_per_meter = models.CharField(max_length=50, null=True)
+    L26_loss_per_meter = models.CharField(max_length=50, null=True)
+    U85_loss_per_meter = models.CharField(max_length=50, null=True)
+    status = models.CharField(max_length=100, null=True)
+    quantity_in_hand = models.FloatField(null=True)
+    def __str__(self):
+        return(f"{self.vendor} {self.model}")
