@@ -11,7 +11,6 @@ Op_BOOP= [
         ]
 
 
-
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(label="", widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Email Address'}))
     first_name = forms.CharField(label="", max_length=100, widget=forms.TextInput(attrs={'class':'form-control','placeholder':'First Name'}))
@@ -41,7 +40,6 @@ class SignUpForm(UserCreationForm):
             self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'
             self.fields['password2'].label = ''
             self.fields['password2'].help_text = '<span class="form-text text-muted"><small>Enter the same password as before, for verification.</small></span>'	
-
 
 class AddBasicInfoForm(forms.ModelForm):
     site_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"placeholder":"Site Name", "class":"form-control"}), label="Site Name")
@@ -93,7 +91,6 @@ class AddBasicInfoForm(forms.ModelForm):
                     'radio_engineer',
                     'add_notes'
                     )
-	
     
 class PhyInfoForm(forms.ModelForm):
     site_alpha = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={"class":"form-control"}), label="Site Alpha")
@@ -201,7 +198,15 @@ class WorkRequestForm(forms.ModelForm):
         model = WorkRequest
         fields = '__all__'
 
-class RFReportConfigurationForm(forms.ModelForm):
+class RFReportConfigurationStep1Form(forms.ModelForm):
     class Meta:
         model = RFReportDataSpecific
-        fields = '__all__'  # You can specify specific fields if needed
+        fields = ['site_alpha', 'site_name', 'site_address', 'author', 'reviewer', 'approver']
+                #   , 'report_date', 'qualification',
+                #   'enable_l7', 'enable_l18', 'enable_l21', 'enable_l23', 'enable_l26', 'enable_nr850', 'enable_nr3500',
+                #   'feeder_length', 'feeder_dimension', 'no_sectors', 'sector_type'] # You can specify specific fields if needed
+
+class RFReportConfigurationStep2Form(forms.ModelForm):
+    class Meta:
+        model = RFReportDataSpecific
+        fields = ['sector1_azimuth_range', 'sector1_azimuth','sector2_azimuth_range', 'sector2_azimuth','sector3_azimuth_range', 'sector3_azimuth'] # You can specify specific fields if needed

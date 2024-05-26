@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect,  get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import SignUpForm, AddBasicInfoForm, PhyInfoForm, RecordForm, BookingFilterForm, AlphaCheckForm, WorkRequestForm, RFReportConfigurationForm
+from .forms import SignUpForm, AddBasicInfoForm, PhyInfoForm, RecordForm, BookingFilterForm, AlphaCheckForm, WorkRequestForm, RFReportConfigurationStep1Form, RFReportConfigurationStep2Form
 from .models import Resource, Site, PhyInfo, Record, WorkRequest, RFReportDataSpecific
 from django.contrib.auth.models import User
 import pandas as pd
@@ -188,18 +188,18 @@ def register_user(request): # user registration
             return render(request, 'register.html', {'form':form})
     return render(request, 'register.html', {})
 
-def customer_record(request,pk): # specific site information
+def customer_record(request,pk): # to show specific site information
     if request.user.is_authenticated:
         # Look up records
-        customer_record = Site.objects.get(id=pk)
+        customer_record = Site.objects.get(site_alpha=pk)
         return render(request, 'record.html', {'customer_record':customer_record})
     else:
         messages.success(request, "You Must Be Logged In To View That Page...")
         return redirect('home')
     
-def delete_record(request, pk): #to delete a site
+def delete_record(request, pk): #to delete a specific site
 	if request.user.is_authenticated:
-		delete_it = Site.objects.get(id=pk)
+		delete_it = Site.objects.get(site_alpha=pk)
 		delete_it.delete()
 		messages.success(request, "Record Deleted Successfully...")
 		return redirect('home')
@@ -352,15 +352,29 @@ def request_record(request,pk): # to view specific booking and alter.
         messages.success(request, "You Must Be Logged In To View That Page...")
         return redirect('home')
 
-def site_configuration_form(request):
+def site_configuration_form_step1(request):
     if request.method == 'POST':
-        form = RFReportConfigurationForm(request.POST)
+        form = RFReportConfigurationStep1Form(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('success_page')  # Redirect to a success page or any other URL
+            request.session['section_one_data'] = form.cleaned_data
+            return redirect('site_configuration_form_step2')
+            # form.save()
+            # return redirect('success_page')  # Redirect to a success page or any other URL
     else:
-        form = RFReportConfigurationForm()
-    
-    return render(request, 'rf_report_configuration_form.html', {'form': form})
+        form = RFReportConfigurationStep1Form()
+    return render(request, 'rf_report_configuration_form_step1.html', {'form': form})
+
+def site_configuration_form_step2(request):
+    if request.method == 'POST':
+        form = RFReportConfigurationStep2Form(request.POST)
+        if form.is_valid():
+            combined_data = dict(request.session.get('section_one_data', {}), **form.cleaned_data)
+            RFReportDataSpecific.objects.create(**combined_data)
+            messages.success(request, "Sector Information Added...")
+            return redirect('view_siteinfo')
+    else:
+        form = RFReportConfigurationStep2Form()
+        return render(request, 'rf_report_configuration_form_step2.html', {'form': form})
+
 def test_pass(request):
     return render(request, 'test.html')

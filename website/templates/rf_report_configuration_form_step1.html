@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div class="col-md-6 offset-md-3">
+        <h1>RF Report Information</h1>
+        <br/>
+        
+        <form method="POST" action="{% url 'site_configuration_form_step1' %}">
+            {% csrf_token %}
+        
+            {{ form.as_p }}
+        
+        <br/>
+          <button type="submit" class="btn btn-secondary">Next</button>
+           <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+        
+        </form>
+        
+    </div>
+        
+
+{% endblock %}
+
+<!-- <head>
+    <title>Networking Equipment Form</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 50%;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hardware Information</h1>
+    <form method="post" action="{% url 'add_phy_info' %}">
+        {% csrf_token %}
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td><label for="site_alpha">Site Alpha:</label></td>
+                <td><input type="text" id="site_alpha" name="site_alpha" maxlength="10"></td>
+            </tr>
+            <tr>
+                <td><label for="frequency_band">Frequency Band:</label></td>
+                <td><input type="text" id="frequency_band" name="frequency_band" maxlength="10"></td>
+            </tr>
+            <tr>
+                <td><label for="vendor">Vendor:</label></td>
+                <td><input type="text" id="vendor" name="vendor" maxlength="10"></td>
+            </tr>
+                <td><label for="vendor">Vendor:</label></td>
+                <td><input type="text" id="frequency_band" name="frequency_band" maxlength="10"></td>
+            </tr>
+            <tr>
+                <td><label for="frequency_band">Frequency Band:</label></td>
+                <td><input type="text" id="frequency_band" name="frequency_band" maxlength="10"></td>
+            </tr>
+            <tr>
+                <td><label for="frequency_band">Frequency Band:</label></td>
+                <td><input type="text" id="frequency_band" name="frequency_band" maxlength="10"></td>
+            </tr>
+            <tr>
+                <td><label for="frequency_band">Frequency Band:</label></td>
+                <td><input type="text" id="frequency_band" name="frequency_band" maxlength="10"></td>
+            </tr>
+            <tr>
+                <td><label for="frequency_band">Frequency Band:</label></td>
+                <td><input type="text" id="frequency_band" name="frequency_band" maxlength="10"></td>
+            </tr>
+            <tr>
+                <td><label for="frequency_band">Frequency Band:</label></td>
+                <td><input type="text" id="frequency_band" name="frequency_band" maxlength="10"></td>
+            </tr>
+            <tr>
+                <td><label for="frequency_band">Frequency Band:</label></td>
+                <td><input type="text" id="frequency_band" name="frequency_band" maxlength="10"></td>
+            </tr>
+            <tr>
+                <td><label for="frequency_band">Frequency Band:</label></td>
+                <td><input type="text" id="frequency_band" name="frequency_band" maxlength="10"></td>
+            </tr>
+            <tr>
+                <td><label for="frequency_band">Frequency Band:</label></td>
+                <td><input type="text" id="frequency_band" name="frequency_band" maxlength="10"></td>
+            </tr>
+            <tr>
+                <td><label for="frequency_band">Frequency Band:</label></td>
+                <td><input type="text" id="frequency_band" name="frequency_band" maxlength="10"></td>
+            </tr>
+            
+            <!-- Add more rows for other fields following the same pattern -->
+        <!-- </table>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+</body> --> -->

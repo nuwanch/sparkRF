@@ -6,12 +6,12 @@ urlpatterns = [
     # path('login/', views.login_user, name='login'),
     path('logout/', views.logout_user, name='logout'),
     path('register/', views.register_user, name='register'),
-    path('record/<int:pk>', views.customer_record, name='record'),
-    path('delete_record/<int:pk>', views.delete_record, name='delete_record'),
+    path('record/<str:pk>', views.customer_record, name='record'),
+    path('delete_record/<str:pk>', views.delete_record, name='delete_record'),
     path('add_record/', views.add_record, name='add_record'),
-    path('update_record/<int:pk>', views.update_record, name='update_record'),
+    path('update_record/<str:pk>', views.update_record, name='update_record'),
     path('download/', views.download, name='download'),
-    path('download_xl/<int:pk>', views.download_xl, name='download_xl'),
+    path('download_xl/<str:pk>', views.download_xl, name='download_xl'),
     path('add_phy_info', views.add_phy_info, name='add_phy_info'),
     path('reserve_alphacode', views.reserve_alphacode, name='reserve_alphacode'),
     path('view_siteinfo', views.view_siteinfo, name='view_siteinfo'),
@@ -29,7 +29,8 @@ urlpatterns = [
     path('work_request_list', views.work_request_list, name='work_request_list'),
     path('create_work_request', views.create_work_request, name='create_work_request'),
     path('request_record/<int:pk>', views.request_record, name='request_record'),
-    path('site_configuration_form', views.site_configuration_form, name='site_configuration_form'),
+    path('site_configuration_form_step1', views.site_configuration_form_step1, name='site_configuration_form_step1'),
+    path('site_configuration_form_step2', views.site_configuration_form_step2, name='site_configuration_form_step2')
 
     
 ]

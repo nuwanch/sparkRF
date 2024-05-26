@@ -5,7 +5,7 @@
         <h1>RF Report Information</h1>
         <br/>
         
-        <form method="POST" action="{% url 'site_configuration_form' %}">
+        <form method="POST" action="{% url 'site_configuration_form_step2' %}">
             {% csrf_token %}
         
             {{ form.as_p }}

@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 class Site(models.Model):
     created_at = models.DateTimeField(auto_now_add=True) 
     site_name = models.CharField(max_length=50)  
-    site_alpha = models.CharField(max_length=10) 
+    site_alpha = models.CharField(max_length=10, primary_key=True) 
     proposedRFS_date = models.DateField(blank=True, null=True)
     transportable_cow = models.CharField(max_length=50)
     cow_name = models.CharField(max_length=100)
@@ -126,7 +126,7 @@ class RFReportDataSpecific(models.Model): #making a seperate table to hold secto
     author = models.CharField(max_length=50, null=True)
     reviewer = models.CharField(max_length=50, null=True)
     approver = models.CharField(max_length=50, null=True)
-    report_date = models.DateField(null=True)
+    report_date = models.CharField(max_length=50,null=True)
     qualification = models.CharField(max_length=50, null=True)
     enable_l7 = models.CharField(max_length=50, null=True)
     enable_l18 = models.CharField(max_length=50, null=True)

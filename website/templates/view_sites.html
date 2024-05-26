@@ -13,7 +13,7 @@
           <th scope="col">Planned On Air Date</th>
           <th scope="col">Transportable</th>
           <th scope="col">COW Name</th>
-          <th scope="col">ID</th>
+          <!-- <th scope="col">ID</th> -->
         </tr>
       </thead>
       <tbody>
@@ -21,12 +21,12 @@
     {% if records %}
         {% for record in records %}
         <tr>
+          <td><a href="{% url 'record' record.site_alpha %}">{{ record.site_alpha }}</a></td>
           <td>{{record.site_name }}</td>
-          <td>{{record.site_alpha}}</td>
           <td>{{ record.proposedRFS_date }}</td>
           <td>{{ record.transportable_cow }}</td>
           <td>{{ record.cow_name }}</td>
-          <td><a href="{% url 'record' record.id %}">{{ record.id }}</a></td>
+          <!-- <td><a href="{% url 'record' record.site_alpha %}">{{ record.site_alpha }}</a></td> -->
         </tr>
         {% endfor %}
       </div>
