@@ -1,3 +1,4 @@
+from urllib import request
 from django.shortcuts import render, redirect,  get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -25,6 +26,8 @@ from django.core.exceptions import ValidationError
 
     # return render(request, 'create_resource.html', {'form': form})
 
+#Page administration related
+
 def home(request): # this is the home login page
     records = Site.objects.all()
     #Check to see if logging in
@@ -42,35 +45,29 @@ def home(request): # this is the home login page
     else:
         return render(request, 'home.html', {'records':records})
 
-def reserve_alphacode(request): # alpha code reservation, self verification
+def logout_user(request):# to logout user
+    logout(request)
+    messages.success(request, "You have been logged out...")
+    return redirect('home')
+
+def register_user(request): # user registration
+    form = SignUpForm(request.POST or None)
     if request.method == 'POST':
-        form = AlphaCheckForm(request.POST)
         if form.is_valid():
-            # Check for the existence of the product name before saving
-            site_alpha = form.cleaned_data['site_alpha']
-            if Site.objects.filter(site_alpha=site_alpha).exists():
-                messages.success(request, "This site alpha is already taken. Please choose a different one.")
-                # form.add_error('site_alpha', '')
-            else:
-                # Save the form if the product name is unique
-                form.save()
-                messages.success(request, "This site alpha is available to use.")
-                return redirect('reserve_alphacode')  # Redirect to the product list or any other view
-                
-    else:
-        form =  AlphaCheckForm()
+            form.save()
+            # authenticate and login
+            username = form.cleaned_data['username']    
+            password = form.cleaned_data['password1']
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            messages.success(request, "You Have Successfully Registered! Welcome!")
+            return redirect('home')
+        else:
+            form = SignUpForm()
+            return render(request, 'register.html', {'form':form})
+    return render(request, 'register.html', {})
 
-    return render(request, 'alpha_checker.html', {'form':form})
-
-def create_rfreport(request): # rf report creation, take necessary inputs only
-    pass
-
-def create_tnet(request): # tnet form creation, take necessary inputs only
-    pass
-
-def create_celldata(request): #cell data creation, take necessary inputs only
-    pass
-
+#Resource booking related
 @login_required
 def book_resource(request): # create booking
     # user = request.user
@@ -96,7 +93,7 @@ def book_resource(request): # create booking
         form = RecordForm(initial=initial_data) 
     return render(request, 'book_resource.html', {'form': form})
 
-def booking_record(request,pk): # to view specific booking and alter. 
+def booking_record(request,pk): # to view specific resource booking and alter. 
     if request.user.is_authenticated:
         # Look up records
         booking_record = Record.objects.get(id=pk)
@@ -133,7 +130,17 @@ def view_bookings(request): # to show bookings for specific resource
     else:
         messages.success(request, "You Must Be Logged In To View That Page...")
         return redirect('home')
-    
+
+def request_record(request,pk): # to view specific work order  and alter. 
+    if request.user.is_authenticated:
+        # Look up records
+        request_record = WorkRequest.objects.get(id=pk)
+        # work_request = get_object_or_404(WorkRequest, pk=pk)
+        return render(request, 'request_record.html', {'request_record':request_record})
+    else:
+        messages.success(request, "You Must Be Logged In To View That Page...")
+        return redirect('home')  
+     
 def update_booking(request,pk): # to update specific booking
 	if request.user.is_authenticated:
 		current_record = Record.objects.get(id=pk)
@@ -157,6 +164,57 @@ def delete_booking(request,pk): #to delete a booking
 		messages.success(request, "You Must Be Logged In To Do That...")
 		return redirect('home')
 
+def is_overlapping(existing_start, existing_end, new_start, new_end): #checking booking overlapping
+    return (new_start < existing_end) and (existing_start < new_end)
+
+def check_overlapping_bookings(resource, new_start, new_end): #main function for checking booking overlapping
+    existing_bookings = Record.objects.filter(asset_name=resource)
+
+    for booking in existing_bookings:
+        if is_overlapping(booking.from_date, booking.to_date, new_start, new_end):
+            raise ValidationError("Booking overlaps with an existing reservation.")
+        
+def work_request_list(request):
+    if request.user.is_authenticated:
+        # Look up records
+        requests = WorkRequest.objects.all()
+        return render(request, 'work_request_list.html', {'requests':requests})
+    else:
+        messages.success(request, "You Must Be Logged In To View That Page...")
+        return redirect('home')
+
+def create_work_request(request):
+    if request.method == 'POST':
+        form = WorkRequestForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('work_request_list')
+    else:
+        form = WorkRequestForm()
+
+    return render(request, 'create_work_request.html', {'form': form})
+
+#RF data preparation related
+def reserve_alphacode(request): # alpha code reservation, self verification
+    if request.method == 'POST':
+        form = AlphaCheckForm(request.POST)
+        if form.is_valid():
+            # Check for the existence of the product name before saving
+            site_alpha = form.cleaned_data['site_alpha']
+            if Site.objects.filter(site_alpha=site_alpha).exists():
+                messages.success(request, "This site alpha is already taken. Please choose a different one.")
+                # form.add_error('site_alpha', '')
+            else:
+                # Save the form if the product name is unique
+                form.save()
+                messages.success(request, "This site alpha is available to use.")
+                return redirect('reserve_alphacode')  # Redirect to the product list or any other view
+                
+    else:
+        form =  AlphaCheckForm()
+
+    return render(request, 'alpha_checker.html', {'form':form})
+
 def view_siteinfo(request): # view total site info
     if request.user.is_authenticated:
         # Look up records
@@ -165,28 +223,6 @@ def view_siteinfo(request): # view total site info
     else:
         messages.success(request, "You Must Be Logged In To View That Page...")
         return redirect('home')
-
-def logout_user(request):# to logout user
-    logout(request)
-    messages.success(request, "You have been logged out...")
-    return redirect('home')
-
-def register_user(request): # user registration
-    form = SignUpForm(request.POST or None)
-    if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            # authenticate and login
-            username = form.cleaned_data['username']    
-            password = form.cleaned_data['password1']
-            user = authenticate(username=username, password=password)
-            login(request, user)
-            messages.success(request, "You Have Successfully Registered! Welcome!")
-            return redirect('home')
-        else:
-            form = SignUpForm()
-            return render(request, 'register.html', {'form':form})
-    return render(request, 'register.html', {})
 
 def customer_record(request,pk): # to show specific site information
     if request.user.is_authenticated:
@@ -208,27 +244,36 @@ def delete_record(request, pk): #to delete a specific site
 		return redirect('home')
 
 def add_record(request):# tnet form 
-	form = AddBasicInfoForm(request.POST or None)
-	if request.user.is_authenticated:
-		if request.method == "POST":
-			if form.is_valid():
-				add_record = form.save()
-				messages.success(request, "Basic information Added...")
-				return redirect('add_phy_info')
-		return render(request, 'add_record.html', {'form':form})
-	else:
-		messages.success(request, "You Must Be Logged In...")
-		return redirect('home')
+    form = AddBasicInfoForm(request.POST or None)
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            if form.is_valid():
+                add_record = form.save()
+                messages.success(request, "Basic information Added...")
+                return redirect('add_phy_info')
+        return render(request, 'add_record.html', {'form':form})
+    else:
+        messages.success(request, "You Must Be Logged In...")
+        return redirect('home')
+    # site = get_object_or_404(Site, site_alpha=site_alpha)
+    # if request.method == 'POST':
+    #     form = AddBasicInfoForm(request.POST, instance=site)
+    #     if form.is_valid():
+    #         form.save()
+    #         return redirect('add_phy_info')  # Implement site_detail view as needed
+    # else:
+    #     form = AddBasicInfoForm(instance=site)
+    # return render(request, 'add_record.html', {'form': form})
 
-def update_record(request, pk):
+def update_record(request, sitealpha):
 	if request.user.is_authenticated:
-		current_record = Site.objects.get(id=pk)
+		current_record = Site.objects.get(site_alpha=sitealpha)
 		form = AddBasicInfoForm(request.POST or None, instance=current_record)
 		if form.is_valid():
 			form.save()
 			messages.success(request, "Record Has Been Updated!")
 			return redirect('home')
-		return render(request, 'update_record.html', {'form':form})
+		return render(request, 'view_sites.html', {'form':form})
 	else:
 		messages.success(request, "You Must Be Logged In...")
 		return redirect('home')
@@ -312,47 +357,7 @@ def add_phy_info(request):
 		messages.success(request, "You Must Be Logged In...")
 		return redirect('home')
 
-def is_overlapping(existing_start, existing_end, new_start, new_end): #checking booking overlapping
-    return (new_start < existing_end) and (existing_start < new_end)
-
-def check_overlapping_bookings(resource, new_start, new_end): #main function for checking booking overlapping
-    existing_bookings = Record.objects.filter(asset_name=resource)
-
-    for booking in existing_bookings:
-        if is_overlapping(booking.from_date, booking.to_date, new_start, new_end):
-            raise ValidationError("Booking overlaps with an existing reservation.")
-        
-def work_request_list(request):
-    if request.user.is_authenticated:
-        # Look up records
-        requests = WorkRequest.objects.all()
-        return render(request, 'work_request_list.html', {'requests':requests})
-    else:
-        messages.success(request, "You Must Be Logged In To View That Page...")
-        return redirect('home')
-
-def create_work_request(request):
-    if request.method == 'POST':
-        form = WorkRequestForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('work_request_list')
-    else:
-        form = WorkRequestForm()
-
-    return render(request, 'create_work_request.html', {'form': form})
-
-def request_record(request,pk): # to view specific booking and alter. 
-    if request.user.is_authenticated:
-        # Look up records
-        request_record = WorkRequest.objects.get(id=pk)
-        # work_request = get_object_or_404(WorkRequest, pk=pk)
-        return render(request, 'request_record.html', {'request_record':request_record})
-    else:
-        messages.success(request, "You Must Be Logged In To View That Page...")
-        return redirect('home')
-
-def site_configuration_form_step1(request):
+def site_configuration_form_step1(request): # required data to create RF report step 1
     if request.method == 'POST':
         form = RFReportConfigurationStep1Form(request.POST)
         if form.is_valid():
@@ -364,7 +369,7 @@ def site_configuration_form_step1(request):
         form = RFReportConfigurationStep1Form()
     return render(request, 'rf_report_configuration_form_step1.html', {'form': form})
 
-def site_configuration_form_step2(request):
+def site_configuration_form_step2(request): # required data to create RF report step 2
     if request.method == 'POST':
         form = RFReportConfigurationStep2Form(request.POST)
         if form.is_valid():
@@ -375,6 +380,37 @@ def site_configuration_form_step2(request):
     else:
         form = RFReportConfigurationStep2Form()
         return render(request, 'rf_report_configuration_form_step2.html', {'form': form})
+
+def site_update(request, site_alpha): # this is used to update site data base later from TNET form
+    site = get_object_or_404(Site, site_alpha=site_alpha)
+    if request.method == 'POST':
+        form = AddBasicInfoForm(request.POST, instance=site)
+        if form.is_valid():
+            form.save()
+            return redirect('home')  # Redirect to a home
+    else:
+        form = AddBasicInfoForm(instance=site)
+    return render(request, 'add_record.html', {'form': form})
+
+def create_rfreport(request): # rf report creation, take necessary inputs only, data base update will be done seperately. This has the python logic to generate RF report
+    pass
+
+def create_tnet(request): # tnet form creation, take necessary inputs only
+    form = AddBasicInfoForm(request.POST or None)
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            if form.is_valid():
+                add_record = form.save()
+                messages.success(request, "Basic information Added...")
+                return redirect('add_phy_info')
+        return render(request, 'add_record.html', {'form':form})
+    else:
+        messages.success(request, "You Must Be Logged In...")
+        return redirect('home')
+
+def create_celldata(request): #cell data creation, take necessary inputs only
+    pass
+
 
 def test_pass(request):
     return render(request, 'test.html')
